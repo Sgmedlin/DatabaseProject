@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <script src="js/jquery-1.6.2.min.js" type="text/javascript"></script> 
+	<script src="js/jquery-ui-1.8.16.custom.min.js" type="text/javascript"></script>
+ 	<title>Ye Ole Sailor Search</title>
+	<script>
+	$(document).ready(function() {
+		$( "#searchSailorName" ).change(function() {
+		
+			$.ajax({
+				url: 'searchSailorName.php', 
+				data: {searchSailor: $( "#searchSailorName" ).val()},
+				success: function(data){
+					$('#searchSailorResult').html(data);	
+				
+				}
+			});
+		});
+		
+	});
+	</script>
+</head>
+<body>
+	<h3>Search by Sailor Name</h3>	
+           
+	<input class="xlarge" id="searchSailorName" type="search" size="30" placeholder="Name"/>
+
+	<div id="searchSailorResult">Sailor Search Result</div>
+
+	<br/><br/>
+
+	<a href="https://cs4750.cs.virginia.edu/~sgm4gu/"> Back to main page </a>
+
+
+</body>
+</html>
