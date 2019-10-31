@@ -1,14 +1,33 @@
 <?php
-// Initialize the session
-session_start();
- 
-require_once "session_config.php";
 
-// Form the SQL query (a SELECT query)
-$sql="SELECT * FROM Groups WHERE status='Open'";
-$result = mysqli_query($link, $sql);
-// Print the data from the table row by row
+	session_start();
 
+	require_once "session_config.php";
+
+   $sql = "SELECT * FROM User_Profile WHERE user_id = '".$_GET['id']."'";
+   $result = mysqli_query($link, $sql);
+
+   $user_details = mysqli_fetch_assoc($result);
+
+   $user_name = $user_details['name'];
+   $user_email = $user_details['email'];
+   $user_bio = $user_details['bio'];
+   
+   mysqli_free_result($result);
+
+   $sql1 = "SELECT * FROM Users WHERE id = '".$_GET['id']."'";
+
+   $result1 = mysqli_query($link, $sql1);
+
+   $user_detail = mysqli_fetch_assoc($result1);
+
+   $username = $user_detail['username'];
+
+   mysqli_free_result($result1);
+
+   $sql2 = "SELECT group_id, group_name, description FROM User_Profile NATURAL JOIN belongs_to NATURAL JOIN Groups WHERE user_id=".$_GET['id'];
+
+   $result2 = mysqli_query($link, $sql2);
 
 ?>
 
@@ -25,7 +44,7 @@ $result = mysqli_query($link, $sql);
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
-		<title>Groups</title>
+		<title>User Details</title>
 
 	</head>
 
@@ -40,7 +59,7 @@ $result = mysqli_query($link, $sql);
 		  <div class="collapse navbar-collapse" id="navbarSupportedContent">
 		    <ul class="navbar-nav mr-auto">
 		      <li class="nav-item">
-		        <a class="nav-link" href="index.php">Home</a>
+		        <a class="nav-link" href="index.php"> Home </a>
 		      </li>
 		      <?php 
                 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
@@ -56,7 +75,7 @@ $result = mysqli_query($link, $sql);
 		        <a class="nav-link" href="groups.php"> Groups <span class="sr-only">(current)</span> </a>
 		      </li>
 		    </ul>
-    		<?php 
+		    <?php 
                 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
                 	echo "<span class='navbar-nav'>
                 			<a href='logout.php' class='nav-link'> Log Out </a>
@@ -67,12 +86,17 @@ $result = mysqli_query($link, $sql);
 		    			</span>";
                 }
                 ?>
+		    
 		    	
 		  </div>
 		</nav>	
 
-		<h1> Groups Page </h1>
-		<a href="create_group.php">Create Group</a>
+		<h1> <?php echo $user_name; ?> </h1>
+		<p> Username: <?php echo $username; ?> </p>
+		<p> Email: <?php echo $user_email; ?>  </p>
+		<p> Bio: <?php echo $user_bio; ?> </p>
+
+		<h2><?php echo $user_name; ?>'s Groups:</h2>
 		<table class="table table-hover table-sm">
 			<thead>
 				<th scope="col">Group Name</th>
@@ -81,7 +105,7 @@ $result = mysqli_query($link, $sql);
 			</thead>
 		<tbody>
 		<?php 
-		while($row = mysqli_fetch_array($result)) {
+		while($row = mysqli_fetch_array($result2)) {
 			echo "<tr>";
 			echo "<td> <a class='btn btn-link' role='button' href='group_details.php?id=" . $row['group_id'] . "'>" . $row['group_name'] .  "</td>";
 			echo "<td>" . $row['description'] . "</td>";
@@ -92,7 +116,7 @@ $result = mysqli_query($link, $sql);
 		 ?>
 		 </tbody>
 		</table>
-
+		
 
 
 	</body>
