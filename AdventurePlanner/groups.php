@@ -65,6 +65,7 @@ session_start();
 
 		<h1> Groups Page </h1>
 		<p> This will contain information about public groups </p>
+		<a href="create_group.php">Create Group</a>
 
 
 

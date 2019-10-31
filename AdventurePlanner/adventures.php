@@ -72,8 +72,7 @@ $result = mysqli_query($link, $sql);
 		  </div>
 		</nav>	
 
-		<h1> This is the Adventures Page </h1>
-		<p> You will be able to see a list of all adventures below </p>
+		<h1> Adventures </h1>
 		<table class="table table-hover table-sm">
 			<thead>
 				<th scope="col">Adventure Name</th>
