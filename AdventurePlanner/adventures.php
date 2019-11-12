@@ -1,13 +1,17 @@
 <?php
-// Initialize the session
-session_start();
+	// Initialize the session
+	session_start();
 
-require_once "session_config.php";
+	// Uses basic user access level for viewing adventure details
+	require_once "session_config.php";
 
-// Form the SQL query (a SELECT query)
-$sql="SELECT * FROM Adventure";
-$result = mysqli_query($link, $sql);
-// Print the data from the table row by row
+	// Query all of the adventures from the Adventure database table
+	$sql="SELECT * FROM Adventure";
+
+	// Store the query in the "result" variable to iteratively list the results
+	// in the HTML below
+	$result = mysqli_query($link, $sql);
+
 
 ?>
 
@@ -31,6 +35,7 @@ $result = mysqli_query($link, $sql);
 
 	<body>
 
+		<!-- NavBar must be changed in individual files -->
 		<nav class="navbar navbar-expand-lg navbar-light bg-light">
 		  <a class="navbar-brand" href="#">Adventure Planner</a>
 		  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,26 +78,34 @@ $result = mysqli_query($link, $sql);
 		</nav>	
 
 		<h1> Adventures </h1>
+
+		<!-- Table for showing the results of the query on Adventures table -->
 		<table class="table table-hover table-sm">
+
+			<!-- Header of the table -->
 			<thead>
 				<th scope="col">Adventure Name</th>
 				<th scope="col">Latitude</th>
 				<th scope="col">Longitude</th>
-
 			</thead>
-		<tbody>
-		<?php 
-		while($row = mysqli_fetch_array($result)) {
-			echo "<tr>";
-			echo "<td> <a class='btn btn-link' role='button' href='adventure_details.php?id=" . $row['adventure_id'] . "'>" . $row['name'] .  "</td>";
-			echo "<td>" . $row['latitude'] . "</td>";
-			echo "<td>" . $row['longitude'] . "</td>";
-			echo "</tr>";
-			}
-			mysqli_close($con);
+			
+			<!-- Body of the table, uses PHP to show the results of the query
+			on the Adventures table by using the $result variable defined in the 
+			PHP section of the file above -->
+			<tbody>
+				<?php 
+					while($row = mysqli_fetch_array($result)) {
+						echo "<tr>";
+						echo "<td> <a class='btn btn-link' role='button' href='adventure_details.php?id=" . $row['adventure_id'] . "'>" . $row['name'] .  "</td>";
+						echo "<td>" . $row['latitude'] . "</td>";
+						echo "<td>" . $row['longitude'] . "</td>";
+						echo "</tr>";
+					}
 
-		 ?>
-		 </tbody>
+					mysqli_close($con);
+
+			 	?>
+			</tbody>
 		</table>
 
 

@@ -1,18 +1,23 @@
 <?php
 
+	// Start a new session containing user's login credentials
 	session_start();
 
+	// Uses basic user access level for viewing adventure details
 	require_once "session_config.php";
 
-   $sql = "SELECT * FROM Adventure WHERE adventure_id = '".$_GET['id']."'";
-   $result = mysqli_query($link, $sql);
+	// Retrieves the adventure ID from the GET information in adventures.php page
+	$sql = "SELECT * FROM Adventure WHERE adventure_id = '".$_GET['id']."'";
+	$result = mysqli_query($link, $sql);
 
-   $adventure_details = mysqli_fetch_assoc($result);
+	// Gets the result of the above query and stores them in the adventure_details variable
+	$adventure_details = mysqli_fetch_assoc($result);
 
-   $adventure_name = $adventure_details['name'];
-   $adventure_latitude = $adventure_details['latitude'];
-   $adventure_longitude = $adventure_details['longitude'];
-   $adventure_description = $adventure_details['description']
+	// Sets variables to contain individual cells from the above query
+  	$adventure_name = $adventure_details['name'];
+   	$adventure_latitude = $adventure_details['latitude'];
+   	$adventure_longitude = $adventure_details['longitude'];
+   	$adventure_description = $adventure_details['description']
 
 ?>
 
@@ -35,6 +40,7 @@
 
 	<body>
 
+		<!-- NavBar must be changed in individual files -->
 		<nav class="navbar navbar-expand-lg navbar-light bg-light">
 		  <a class="navbar-brand" href="#">Adventure Planner</a>
 		  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,6 +81,9 @@
 		    	
 		  </div>
 		</nav>	
+
+		<!-- Displays the information contained in the variables
+		set in the PHP section of the file -->
 
 		<h1> <?php echo $adventure_name; ?> </h1>
 		<p> Latitude: <?php echo $adventure_latitude; ?> </p>

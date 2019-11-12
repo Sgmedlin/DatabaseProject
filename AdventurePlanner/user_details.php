@@ -1,33 +1,39 @@
 <?php
-
+	// Start a new session containing user's login credentials
 	session_start();
 
+	// Uses basic user access level for viewing adventure details
 	require_once "session_config.php";
 
-   $sql = "SELECT * FROM User_Profile WHERE user_id = '".$_GET['id']."'";
-   $result = mysqli_query($link, $sql);
+	// Retrieves the user ID from the GET information in group_details.php page
+  	$sql = "SELECT * FROM User_Profile WHERE user_id = '".$_GET['id']."'";
+   	$result = mysqli_query($link, $sql);
 
-   $user_details = mysqli_fetch_assoc($result);
+   	// Gets the result of the above query and stores them in the user_details variable
+   	$user_details = mysqli_fetch_assoc($result);
 
-   $user_name = $user_details['name'];
-   $user_email = $user_details['email'];
-   $user_bio = $user_details['bio'];
+   	// Sets variables to contain individual cells from the above query
+   	$user_name = $user_details['name'];
+   	$user_email = $user_details['email'];
+   	$user_bio = $user_details['bio'];
    
-   mysqli_free_result($result);
+   	mysqli_free_result($result);
 
-   $sql1 = "SELECT * FROM Users WHERE id = '".$_GET['id']."'";
+   	// Like above, but get user's username from the Users table (distinct from User Profile table)
+   	$sql1 = "SELECT * FROM Users WHERE id = '".$_GET['id']."'";
+   	$result1 = mysqli_query($link, $sql1);
 
-   $result1 = mysqli_query($link, $sql1);
+   	$user_detail = mysqli_fetch_assoc($result1);
+   	$username = $user_detail['username'];
 
-   $user_detail = mysqli_fetch_assoc($result1);
+   	mysqli_free_result($result1);
 
-   $username = $user_detail['username'];
+	// Query to select all of the groups a user is a member of
+   	$sql2 = "SELECT group_id, group_name, description FROM User_Profile NATURAL JOIN belongs_to NATURAL JOIN Groups WHERE user_id=".$_GET['id'];
 
-   mysqli_free_result($result1);
-
-   $sql2 = "SELECT group_id, group_name, description FROM User_Profile NATURAL JOIN belongs_to NATURAL JOIN Groups WHERE user_id=".$_GET['id'];
-
-   $result2 = mysqli_query($link, $sql2);
+   	// Store the query in the "result" variable to iteratively list the results
+	// in the HTML below
+   	$result2 = mysqli_query($link, $sql2);
 
 ?>
 
@@ -50,6 +56,7 @@
 
 	<body>
 
+		<!-- NavBar must be changed in individual files -->
 		<nav class="navbar navbar-expand-lg navbar-light bg-light">
 		  <a class="navbar-brand" href="#">Adventure Planner</a>
 		  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -91,35 +98,41 @@
 		  </div>
 		</nav>	
 
+		<!-- Show basic information about a user -->
 		<h1> <?php echo $user_name; ?> </h1>
 		<p> Username: <?php echo $username; ?> </p>
 		<p> Email: <?php echo $user_email; ?>  </p>
 		<p> Bio: <?php echo $user_bio; ?> </p>
 
 		<h2><?php echo $user_name; ?>'s Groups:</h2>
+
+		<!-- Table for showing the groups a user is a member of -->
 		<table class="table table-hover table-sm">
+
+			<!-- Header of the table -->
 			<thead>
 				<th scope="col">Group Name</th>
 				<th scope="col">Group Description</th>
 
 			</thead>
-		<tbody>
-		<?php 
-		while($row = mysqli_fetch_array($result2)) {
-			echo "<tr>";
-			echo "<td> <a class='btn btn-link' role='button' href='group_details.php?id=" . $row['group_id'] . "'>" . $row['group_name'] .  "</td>";
-			echo "<td>" . $row['description'] . "</td>";
-			echo "</tr>";
-			}
-			mysqli_close($con);
 
-		 ?>
-		 </tbody>
+			<!-- Body of the table, uses PHP to show the results of the query
+			 by using the $result variable defined in the PHP section of the file above -->
+			<tbody>
+				<?php 
+
+					while($row = mysqli_fetch_array($result2)) {
+						echo "<tr>";
+						echo "<td> <a class='btn btn-link' role='button' href='group_details.php?id=" . $row['group_id'] . "'>" . $row['group_name'] .  "</td>";
+						echo "<td>" . $row['description'] . "</td>";
+						echo "</tr>";
+						}
+						mysqli_close($con);
+
+				 ?>
+			 </tbody>
 		</table>
 		
-
-
 	</body>
-
 
 </html>

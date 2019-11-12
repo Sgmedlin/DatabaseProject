@@ -1,130 +1,128 @@
 <?php
-// Initialize the session
-session_start();
- 
-// Check if the user is logged in, if not then redirect him to login page
-if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
-    header("location: login.php");
-    exit;
-}
-
-// Include config file
-require_once "session_config.php";
- 
-// Define variables and initialize with empty values
-$name = $email = $bio = "";
-$name_err = $email_err = "";
-$welcome_message = "";
-$update_information_text = "";
-
- $param_id = $_SESSION["id"];
-
- $query = "SELECT * FROM User_Profile WHERE user_id=$param_id LIMIT 1";
- $result = mysqli_query($link, $query);
-
- $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
- $name = $row['name']; 
- $email = $row['email']; 
- $bio = $row['bio']; 
-
- $rows = mysqli_num_rows($result);
-
- if ($rows > 0){
-    $param_result = true;
- }
- else{
-    $param_result = false;
- }
-
- if ($param_result == false){
-    $welcome_message = "Thank you for signing up, please fill out the information below!";
- }
-
- mysqli_free_result($result);
-// Processing form data when form is submitted
-if($_SERVER["REQUEST_METHOD"] == "POST"){
- 
-    // Validate name field
-    if(empty(trim($_POST["name"]))){
-        $name_err = "Please enter your name.";
-    } else{
-        $name = trim($_POST["name"]);
+    // Initialize the session
+    session_start();
+     
+    // Check if the user is logged in, if not then redirect him to login page
+    if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+        header("location: login.php");
+        exit;
     }
 
-    // Validate email field
-    if(empty(trim($_POST["email"]))){
-        $email_err = "Please enter your email";     
-    } else{
-        $email = trim($_POST["email"]);
-    }
+    // Include config file
+    require_once "session_config.php";
+     
+    // Define variables and initialize with empty values
+    $name = $email = $bio = "";
+    $name_err = $email_err = "";
+    $welcome_message = "";
+    $update_information_text = "";
 
-    // Make sure bio field is set to empty string if none is input
-    if(empty(trim($_POST["bio"]))){
-        $bio = " ";
-    } else{
-        $bio = trim($_POST["bio"]);
-    }
+     $param_id = $_SESSION["id"];
 
+     $query = "SELECT * FROM User_Profile WHERE user_id=$param_id LIMIT 1";
+     $result = mysqli_query($link, $query);
 
-    if ($param_result == true){
+     $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+     $name = $row['name']; 
+     $email = $row['email']; 
+     $bio = $row['bio']; 
 
-        // Check input errors before inserting in database
-        if(empty($name_err) && empty($email_err)){
-            
-            // Prepare an insert statement
-            $sql = "UPDATE User_Profile SET email='$email', name='$name', bio='$bio' WHERE user_id='$param_id'";
-             
-            if($stmt = mysqli_prepare($link, $sql)){
+     $rows = mysqli_num_rows($result);
 
-                // Attempt to execute the prepared statement
-                if(mysqli_stmt_execute($stmt)){
-                    // Redirect to welcome page
-                    $update_information_text = "Successfully updated information.";
-                } else{
-                    $update_information_text = "Something went wrong... Please try again later.";
-                }
-            }
-             
-            // Close statement
-            mysqli_stmt_close($stmt);
+     if ($rows > 0){
+        $param_result = true;
+     }
+     else{
+        $param_result = false;
+     }
+
+     if ($param_result == false){
+        $welcome_message = "Thank you for signing up, please fill out the information below!";
+     }
+
+     mysqli_free_result($result);
+    // Processing form data when form is submitted
+    if($_SERVER["REQUEST_METHOD"] == "POST"){
+     
+        // Validate name field
+        if(empty(trim($_POST["name"]))){
+            $name_err = "Please enter your name.";
+        } else{
+            $name = trim($_POST["name"]);
         }
 
-    }
-    else{
-        // Check input errors before inserting in database
-        if(empty($name_err) && empty($email_err)){
-            
-            // Prepare an insert statement
-            $sql = "INSERT INTO User_Profile (user_id, email, name, bio) VALUES (?, ?, ?, ?)";
-             
-            if($stmt = mysqli_prepare($link, $sql)){
-                // Bind variables to the prepared statement as parameters
-                mysqli_stmt_bind_param($stmt, "isss", $param_id, $email, $name, $bio);
-                
-                // Set parameters
-                $param_username = $username;
-                $param_password = password_hash($password, PASSWORD_DEFAULT); // Creates a password hash
-                
-                // Attempt to execute the prepared statement
-                if(mysqli_stmt_execute($stmt)){
-                    // Redirect to welcome page
-                    $update_information_text = "Successfully created user profile.";
-                } else{
-                    $update_information_text = "Something went wrong. Please try again later.";
-                }
-            }
-             
-            // Close statement
-            mysqli_stmt_close($stmt);
+        // Validate email field
+        if(empty(trim($_POST["email"]))){
+            $email_err = "Please enter your email";     
+        } else{
+            $email = trim($_POST["email"]);
         }
 
+        // Make sure bio field is set to empty string if none is input
+        if(empty(trim($_POST["bio"]))){
+            $bio = " ";
+        } else{
+            $bio = trim($_POST["bio"]);
+        }
+
+
+        if ($param_result == true){
+
+            // Check input errors before inserting in database
+            if(empty($name_err) && empty($email_err)){
+                
+                // Prepare an insert statement
+                $sql = "UPDATE User_Profile SET email='$email', name='$name', bio='$bio' WHERE user_id='$param_id'";
+                 
+                if($stmt = mysqli_prepare($link, $sql)){
+
+                    // Attempt to execute the prepared statement
+                    if(mysqli_stmt_execute($stmt)){
+                        // Redirect to welcome page
+                        $update_information_text = "Successfully updated information.";
+                    } else{
+                        $update_information_text = "Something went wrong... Please try again later.";
+                    }
+                }
+                 
+                // Close statement
+                mysqli_stmt_close($stmt);
+            }
+
+        }
+        else{
+            // Check input errors before inserting in database
+            if(empty($name_err) && empty($email_err)){
+                
+                // Prepare an insert statement
+                $sql = "INSERT INTO User_Profile (user_id, email, name, bio) VALUES (?, ?, ?, ?)";
+                 
+                if($stmt = mysqli_prepare($link, $sql)){
+                    // Bind variables to the prepared statement as parameters
+                    mysqli_stmt_bind_param($stmt, "isss", $param_id, $email, $name, $bio);
+                    
+                    // Set parameters
+                    $param_username = $username;
+                    $param_password = password_hash($password, PASSWORD_DEFAULT); // Creates a password hash
+                    
+                    // Attempt to execute the prepared statement
+                    if(mysqli_stmt_execute($stmt)){
+                        // Redirect to welcome page
+                        $update_information_text = "Successfully created user profile.";
+                    } else{
+                        $update_information_text = "Something went wrong. Please try again later.";
+                    }
+                }
+                 
+                // Close statement
+                mysqli_stmt_close($stmt);
+            }
+
+        }
+        
+        // Close connection
+        mysqli_close($link);
     }
-
-
-    
-    // Close connection
-    mysqli_close($link);
-}
 ?>
  
 <!DOCTYPE html>

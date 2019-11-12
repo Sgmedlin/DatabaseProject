@@ -1,167 +1,142 @@
 <?php
-// Initialize the session
-session_start();
+    // Initialize the session
+    session_start();
 
-
-
-require_once "session_config.php";
+    // Uses basic user access level for viewing adventure details
+    require_once "session_config.php";
  
-// Define variables and initialize with empty values
-$groupname = $description = $private = "";
-$groupname_err = $loggedin_err = $description_err = "";
-$group_id = 0;
+    // Define variables and initialize with empty values
+    $groupname = $description = $private = "";
+    $groupname_err = $loggedin_err = $description_err = "";
+    $group_id = 0;
 
-if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
-    $loggedin_err = "You must be logged in to create a group.";
-}
+    // Check to see if a user is logged in. If they are not, display an error and 
+    // do not let the user create a group
+    if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+        $loggedin_err = "You must be logged in to create a group.";
+    }
 
-// Processing form data when form is submitted
-if($_SERVER["REQUEST_METHOD"] == "POST"){
-    
-    // Validate username
-    if(empty(trim($_POST["groupname"]))){
-        $groupname_err = "Please enter a name for your group.";
-    } else{
-        // Prepare a select statement
-        $sql = "SELECT group_id FROM Groups WHERE group_name=?";
+    // Process the form when the "Submit" button is pressed and a POST call is made
+    if($_SERVER["REQUEST_METHOD"] == "POST"){
         
-        if($stmt = mysqli_prepare($link, $sql)){
-            // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "s", $param_groupname);
+        // Make sure the group name is not empty
+        if(empty(trim($_POST["groupname"]))){
+            $groupname_err = "Please enter a name for your group.";
+
+        } else{
+
+            // Prepare a SELECT statement to check that the group name
+            // entered does not already exist in the database table "Groups"
+            $sql = "SELECT group_id FROM Groups WHERE group_name=?";
             
-            // Set parameters
-            $param_groupname = trim($_POST["groupname"]);
-            
-            // Attempt to execute the prepared statement
-            if(mysqli_stmt_execute($stmt)){
-                /* store result */
-                mysqli_stmt_store_result($stmt);
+            if($stmt = mysqli_prepare($link, $sql)){
+                // Bind variables to the prepared statement as parameters
+                mysqli_stmt_bind_param($stmt, "s", $param_groupname);
                 
-                if(mysqli_stmt_num_rows($stmt) == 1){
-                    $groupname_err = "This group name is already taken.";
+                // Set groupname parameter in the "mysqli_stmt_bind_param" function
+                $param_groupname = trim($_POST["groupname"]);
+                
+                // Attempt to execute the prepared statement
+                if(mysqli_stmt_execute($stmt)){
+                    // store result 
+                    mysqli_stmt_store_result($stmt);
+                    
+                    // If the SELECT statement returns a result, the name is taken
+                    // set the group name error variable
+                    if(mysqli_stmt_num_rows($stmt) == 1){
+                        $groupname_err = "This group name is already taken.";
+                    } else{
+                        $groupname = trim($_POST["groupname"]);
+                    }
                 } else{
-                    $groupname = trim($_POST["groupname"]);
+                    echo "Oops! Something went wrong. Please try again later.";
                 }
-            } else{
-                echo "Oops! Something went wrong. Please try again later.";
             }
+             
+            // Close the statement made above in mysqli_prepare
+            mysqli_stmt_close($stmt);
         }
-         
-        // Close statement
-        mysqli_stmt_close($stmt);
-    }
-    
-    // Validate password
-    if(empty(trim($_POST["description"]))){
-        $description_err = "Please provide a description for your group.";     
-    } else{
-        $description = trim($_POST["description"]);
-    }
-
-    if(isset($_POST['privateCheckbox']) && $_POST['privateCheckbox'] == 'YES'){
-    	$private = "Closed";
-    }
-    else{
-    	$private = "Open";
-    }
-
-
-    // Check input errors before inserting in database
-    if(empty($groupname_err) && empty($description_err) && empty($loggedin_err)){
-
-
-        $sql0 = "INSERT INTO Groups (group_name, description, status) VALUES (?, ?, ?)";
-
-        if($stmt0 = mysqli_prepare($link, $sql0)){
-            mysqli_stmt_bind_param($stmt0, "sss", $param_groupname, $param_description, $param_status);
-
-            $param_groupname = $groupname;
-            $param_description = $description;
-            $param_status = $private;
-
-
-            mysqli_stmt_execute($stmt0);
-
-            if(mysqli_stmt_affected_rows($stmt0) < 1){
-                echo "Could not create group";
-            }else{
-                $group_id = mysqli_insert_id($link);
-
-            }
-
-        }
-
-
-
-        mysqli_stmt_close($stmt0);
-
-    
-        // $sql1 = "SELECT group_id FROM Group WHERE group_name = ?";
         
-        // if($stmt1 = mysqli_prepare($link, $sql1)){
-        //     // Bind variables to the prepared statement as parameters
-        //     mysqli_stmt_bind_param($stmt1, "s", $param_groupname);
-            
-        //     // Set parameters
-        //     $param_groupname = $groupname;
-            
-        //     // Attempt to execute the prepared statement
-        //     if(mysqli_stmt_execute($stmt1)){
-        //         // Store result
-        //         mysqli_stmt_store_result($stmt1);
-                
-        //         // Check if username exists, if yes then verify password
-        //         if(mysqli_stmt_num_rows($stmt1) == 1){                    
-        //             // Bind result variables
-        //             mysqli_stmt_bind_result($stmt1, $id);
-        //             if(mysqli_stmt_fetch($stmt1)){
-                        
-        //             	$group_id = $id;
-
-        //             }
-        //         } else{
-        //             // Display an error message if username doesn't exist
-        //             $groupname_err = "No group with that name exists.";
-        //         }
-        //     } else{
-        //         echo "Oops! Something went wrong. Please try again later.";
-        //     }
-        // }
-
-        // // Close statement
-        // mysqli_stmt_close($stmt1);
-
-        // Prepare an insert statement
-        $sql2 = "INSERT INTO belongs_to (user_id, group_id, membership_level) VALUES (?, ?, ?)";
-         
-        $access_level = "Owner";
-
-        if($stmt2 = mysqli_prepare($link, $sql2)){
-            // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt2, "iis", $param_user_id, $param_group_id, $param_access_level);
-
-            $param_user_id = $_SESSION["id"];
-            $param_group_id = $group_id;
-            $param_access_level = $access_level;
-            
-            // Attempt to execute the prepared statement
-            if(mysqli_stmt_execute($stmt2)){
-                // Redirect to login page
-                header("location: groups.php");
-            } else{
-                // echo "Something went wrong. Please try again later.";
-            }
+        // Validate the description of the group and make sure it is not empty
+        if(empty(trim($_POST["description"]))){
+            $description_err = "Please provide a description for your group.";     
+        } else{
+            $description = trim($_POST["description"]);
         }
-         
-        // Close statement
-        mysqli_stmt_close($stmt2);
+
+        // Check the result of the checkbox in the form to decide whether to make the group private or not
+        if(isset($_POST['privateCheckbox']) && $_POST['privateCheckbox'] == 'YES'){
+        	$private = "Closed";
+        }
+        else{
+        	$private = "Open";
+        }
+
+        // If any of the errors checked have been set (i.e. the user is either not logged in, the group name is empty, or the description is empty) then don't let the user create a group.
+        if(empty($groupname_err) && empty($description_err) && empty($loggedin_err)){
+
+            // Prepare the SQL statement to INSERT the new group into the table
+            $sql0 = "INSERT INTO Groups (group_name, description, status) VALUES (?, ?, ?)";
+
+            if($stmt0 = mysqli_prepare($link, $sql0)){
+
+                // Bind variables to the prepared statement as parameters
+                mysqli_stmt_bind_param($stmt0, "sss", $param_groupname, $param_description, $param_status);
+
+                // Set parameters in the "mysqli_stmt_bind_param" function
+                $param_groupname = $groupname;
+                $param_description = $description;
+                $param_status = $private;
+
+                // Execute the statement anc insert the new group in the table
+                mysqli_stmt_execute($stmt0);
+
+                // If the insert didn't affect any rows, the group was not successfully created.
+                if(mysqli_stmt_affected_rows($stmt0) < 1){
+                    echo "Could not create group";
+                } else{
+                    $group_id = mysqli_insert_id($link);
+
+                }
+
+            }
+
+            // Close the statement made above in mysqli_prepare
+            mysqli_stmt_close($stmt0);
 
 
+            // Prepare an insert statement for the belongs_to table
+            // This will set the group owner to the user who created the group
+            $sql2 = "INSERT INTO belongs_to (user_id, group_id, membership_level) VALUES (?, ?, ?)";
+            
+            $access_level = "Owner";
+
+            if($stmt2 = mysqli_prepare($link, $sql2)){
+                // Bind variables to the prepared statement as parameters
+                mysqli_stmt_bind_param($stmt2, "iis", $param_user_id, $param_group_id, $param_access_level);
+
+                // Set parameters in the "mysqli_stmt_bind_param" function
+                $param_user_id = $_SESSION["id"];
+                $param_group_id = $group_id;
+                $param_access_level = $access_level;
+                
+                // Attempt to execute the prepared statement
+                if(mysqli_stmt_execute($stmt2)){
+                    // Redirect to groups page upon success
+                    header("location: groups.php");
+                } else{
+                    echo "Something went wrong. Please try again later.";
+                }
+            }
+             
+            // Close statement
+            mysqli_stmt_close($stmt2);
+
+        }
+        
+        // Close connection
+        mysqli_close($link);
     }
-    
-    // Close connection
-    mysqli_close($link);
-}
  
 ?>
 
@@ -183,7 +158,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 	</head>
 
 	<body>
-
+        <!-- NavBar must be changed in individual files -->
 		<nav class="navbar navbar-expand-lg navbar-light bg-light">
 		  <a class="navbar-brand" href="#">Adventure Planner</a>
 		  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -225,32 +200,39 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 		</nav>	
 
 		<h1> Create Group </h1>
+
+        <!-- This will display an error if the user is not logged in -->
         <span class="help-block"><?php echo $loggedin_err; ?></span>
+
+        <!-- Form that will run the above PHP upon "submit" (POST) -->
 		<form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+                <!-- Labels and input for "Group Name" insert -->
 	            <div class="form-group <?php echo (!empty($groupname_err)) ? 'has-error' : ''; ?>">
 	                <label>Group Name</label>
 	                <input type="text" name="groupname" class="form-control" value="<?php echo $groupname; ?>">
 	                <span class="help-block"><?php echo $groupname_err; ?></span>
 	            </div>    
+
+                <!-- Labels and input for "Description" insert -->
 	            <div class="form-group <?php echo (!empty($description_err)) ? 'has-error' : ''; ?>">
 	                <label>Description</label>
 	                <input type="text" name="description" class="form-control" value="<?php echo $description; ?>">
 	                <span class="help-block"><?php echo $description_err; ?></span>
 	            </div>
+
+                <!-- Checkbox for deciding if a group is public or private -->
 	            <div class="form-group form-check">
     				<input type="checkbox" class="form-check-input" name="privateCheckbox" value="YES" id="check">
     				<label class="form-check-label" for="check">Make Group Private (invite only)</label>
   				</div>
+
+                <!-- Group that controls the submission of the form, triggers a POST call -->
 	            <div class="form-group">
 	                <input type="submit" class="btn btn-primary" value="Submit">
 	                <input type="reset" class="btn btn-default" value="Reset">
 	            </div>
 	        </form>
 
-
-
-
 	</body>
-
 
 </html>

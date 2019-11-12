@@ -1,14 +1,16 @@
 <?php
-// Initialize the session
-session_start();
+	// Initialize the session
+	session_start();
  
-require_once "session_config.php";
+ 	// Uses basic user access level for viewing group details
+	require_once "session_config.php";
 
-// Form the SQL query (a SELECT query)
-$sql="SELECT * FROM Groups WHERE status='Open'";
-$result = mysqli_query($link, $sql);
-// Print the data from the table row by row
+	// Query all of the adventures from the Groups database table
+	$sql="SELECT * FROM Groups WHERE status='Open'";
 
+	// Store the query in the "result" variable to iteratively list the results
+	// in the HTML below
+	$result = mysqli_query($link, $sql);
 
 ?>
 
@@ -31,6 +33,7 @@ $result = mysqli_query($link, $sql);
 
 	<body>
 
+		<!-- NavBar must be changed in individual files -->
 		<nav class="navbar navbar-expand-lg navbar-light bg-light">
 		  <a class="navbar-brand" href="#">Adventure Planner</a>
 		  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,30 +75,37 @@ $result = mysqli_query($link, $sql);
 		</nav>	
 
 		<h1> Groups Page </h1>
+		<!-- Takes the user to create_group.php table to create a group -->
 		<a href="create_group.php">Create Group</a>
+
+		<!-- Table for showing the results of the query on Groups table -->
 		<table class="table table-hover table-sm">
+
+			<!-- Header of the table -->
 			<thead>
 				<th scope="col">Group Name</th>
 				<th scope="col">Group Description</th>
-
 			</thead>
-		<tbody>
-		<?php 
-		while($row = mysqli_fetch_array($result)) {
-			echo "<tr>";
-			echo "<td> <a class='btn btn-link' role='button' href='group_details.php?id=" . $row['group_id'] . "'>" . $row['group_name'] .  "</td>";
-			echo "<td>" . $row['description'] . "</td>";
-			echo "</tr>";
-			}
-			mysqli_close($con);
 
-		 ?>
-		 </tbody>
+			<!-- Body of the table, uses PHP to show the results of the query
+			on the Groups table by using the $result variable defined in the 
+			PHP section of the file above -->
+			<tbody>
+				<?php 
+
+					while($row = mysqli_fetch_array($result)) {
+						echo "<tr>";
+						echo "<td> <a class='btn btn-link' role='button' href='group_details.php?id=" . $row['group_id'] . "'>" . $row['group_name'] .  "</td>";
+						echo "<td>" . $row['description'] . "</td>";
+						echo "</tr>";
+						}
+						mysqli_close($con);
+
+				 ?>
+			</tbody>
+
 		</table>
 
-
-
 	</body>
-
 
 </html>

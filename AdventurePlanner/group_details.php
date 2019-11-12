@@ -3,33 +3,44 @@
 	// Start session, checks variables to see if 
 	session_start();
 
+	// Uses basic user access level for viewing adventure details
 	require_once "session_config.php";
 
-   $sql = "SELECT * FROM Groups WHERE group_id = '".$_GET['id']."'";
-   $result = mysqli_query($link, $sql);
+	// Retrieves the group ID from the GET information in groups.php page
+	// Uses result of query to show information about the group in question
+   	$sql = "SELECT * FROM Groups WHERE group_id = '".$_GET['id']."'";
+   	$result = mysqli_query($link, $sql);
 
-   $group_details = mysqli_fetch_assoc($result);
+   	// Gets the result of the above query and stores them in the group_details variable
+   	$group_details = mysqli_fetch_assoc($result);
 
-   $group_name = $group_details['group_name'];
-   $group_description = $group_details['description'];
-   $group_status = $group_details['status'];
+   	// Sets variables to contain individual cells from the above query
+   	$group_name = $group_details['group_name'];
+   	$group_description = $group_details['description'];
+   	$group_status = $group_details['status'];
    
-   mysqli_free_result($result);
+   	mysqli_free_result($result);
 
-   $sql1 = "SELECT user_id, name FROM User_Profile NATURAL JOIN belongs_to NATURAL JOIN Groups WHERE membership_level='Owner' AND group_id=".$_GET['id'];
 
-   $result1 = mysqli_query($link, $sql1);
+   	// Query to select the owner of the group
+   	$sql1 = "SELECT user_id, name FROM User_Profile NATURAL JOIN belongs_to NATURAL JOIN Groups WHERE membership_level='Owner' AND group_id=".$_GET['id'];
 
-   $group_owner_details = mysqli_fetch_assoc($result1);
+   	$result1 = mysqli_query($link, $sql1);
 
-   $owner = $group_owner_details['name'];
-   $owner_id = $group_owner_details['user_id'];
+   	$group_owner_details = mysqli_fetch_assoc($result1);
 
-   mysqli_free_result($result1);
+   	$owner = $group_owner_details['name'];
+   	$owner_id = $group_owner_details['user_id'];
 
-   $sql2 = "SELECT user_id, name, membership_level FROM User_Profile NATURAL JOIN belongs_to NATURAL JOIN Groups WHERE group_id=".$_GET['id'];
+   	mysqli_free_result($result1);
 
-   $result2 = mysqli_query($link, $sql2);
+	// Query to select all of the members of a group
+   	$sql2 = "SELECT user_id, name, membership_level FROM User_Profile NATURAL JOIN belongs_to NATURAL JOIN Groups WHERE group_id=".$_GET['id'];
+
+   	// Store the query in the "result" variable to iteratively list the results
+	// in the HTML below
+   	$result2 = mysqli_query($link, $sql2);
+
 ?>
 
 <!DOCTYPE html>
@@ -51,6 +62,7 @@
 
 	<body>
 
+		<!-- NavBar must be changed in individual files -->
 		<nav class="navbar navbar-expand-lg navbar-light bg-light">
 		  <a class="navbar-brand" href="#">Adventure Planner</a>
 		  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -92,35 +104,42 @@
 		  </div>
 		</nav>	
 
+		<!-- Shows the main details of a group -->
 		<h1> <?php echo $group_name; ?> </h1>
 		<p> Owner:<?php echo "<a class='btn btn-link' role='button' href='user_details.php?id=" . $owner_id . "'>" . $owner .  "</a>"; ?> </p>
 		<p> Status: <?php echo $group_status; ?>  </p>
 		<p> Description: <?php echo $group_description; ?> </p>
 
-		
+		<!-- Shows the members of a group -->
 		<h2>Members:</h2>
+
+		<!-- Table for showing the results of the query on group users -->
 		<table class="table table-hover table-sm">
+
+			<!-- Header of the table -->
 			<thead>
 				<th scope="col">Name</th>
 				<th scope="col">Role</th>
-
 			</thead>
-		<tbody>
-		<?php 
-		while($row = mysqli_fetch_array($result2)) {
-			echo "<tr>";
-			echo "<td> <a class='btn btn-link' role='button' href='user_details.php?id=" . $row['user_id'] . "'>" . $row['name'] .  "</td>";
-			echo "<td>" . $row['membership_level'] . "</td>";
-			echo "</tr>";
-			}
-			mysqli_close($con);
 
-		 ?>
-		 </tbody>
+			<!-- Body of the table, uses PHP to show the results of the query
+			 by using the $result variable defined in the PHP section of the file above -->
+			<tbody>
+				<?php 
+				
+					while($row = mysqli_fetch_array($result2)) {
+					echo "<tr>";
+					echo "<td> <a class='btn btn-link' role='button' href='user_details.php?id=" . $row['user_id'] . "'>" . $row['name'] .  "</td>";
+					echo "<td>" . $row['membership_level'] . "</td>";
+					echo "</tr>";
+					}
+					mysqli_close($con);
+
+			 	?>
+		 	</tbody>
+
 		</table>
 
-
 	</body>
-
 
 </html>

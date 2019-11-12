@@ -1,6 +1,9 @@
 <?php
-/* Database credentials. Assuming you are running MySQL
-server with default setting (user 'root' with no password) */
+// This configuration file will be used for checking login credentials
+// The user "sgm4gu_d" has only been granted read and write access
+// to the "User" database table
+
+/* Database credentials */
 define('DB_SERVER', 'cs4750.cs.virginia.edu');
 define('DB_USERNAME', 'sgm4gu_d');
 define('DB_PASSWORD', 'Ix8ieJoo');
