@@ -1,11 +1,33 @@
 To edit the DB:
 Go to http://cs4750.cs.virginia.edu/phpMyAdmin/index.php
 Login using Sam's account, user: sgm4gu, pass: PleaseDontStealThisPassword
+
+To get repo:
+git clone (https link from github) [Pull from github into local repo.]
+git pull [Make sure master is updated]
+
 To edit files:
-Pull from github into local repo. 
-Make changes.
+git checkout -b (feature/sample-update) [create and move into new branch which is a copy of master]
+git add * [Add all changes]
+git commit -m "New branch for (sample update)" [pushes new branch to github]
+git push origin (feature/sample-update)
+Make the changes.
+git add *
+git commit -m "(sample update)"
+git push origin (feature/sample-update)
+
+To merge with master:
+Go to branch on github
+Create pull request
+Merge.
+
+
 To view locally:
-Copy and paste local repo into WinSCP.
+Open WinSCP
 Use the following WinSCP information, url: portal.cs.virginia.edu, user: (your comp. id), pass: (your pass.), leave port number at 22.
+Open public_html on right hand side
+Copy and paste local repo into WinSCP.
 Then in a browser go to: http://cs4750.cs.virginia.edu/~your-computingID/path-to-your-file/yourfile.php
 In Sam's case it would be: http://cs4750.cs.virginia.edu/~sgm4gu/DatabaseProject/AdventurePlanner/index.php
+(actually https://cs4750.cs.virginia.edu/~sgm4gu/AdventurePlanner/index.php)
+
