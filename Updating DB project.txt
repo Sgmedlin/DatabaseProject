@@ -1,0 +1,11 @@
+To edit the DB:
+Go to http://cs4750.cs.virginia.edu/phpMyAdmin/index.php
+Login using Sam's account, user: sgm4gu, pass: PleaseDontStealThisPassword
+To edit files:
+Pull from github into local repo. 
+Make changes.
+To view locally:
+Copy and paste local repo into WinSCP.
+Use the following WinSCP information, url: portal.cs.virginia.edu, user: (your comp. id), pass: (your pass.), leave port number at 22.
+Then in a browser go to: http://cs4750.cs.virginia.edu/~your-computingID/path-to-your-file/yourfile.php
+In Sam's case it would be: http://cs4750.cs.virginia.edu/~sgm4gu/DatabaseProject/AdventurePlanner/index.php
