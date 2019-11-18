@@ -1,6 +1,6 @@
 <?php
-	
-	// Start session, checks variables to see if 
+
+	// Start session, checks variables to see if
 	session_start();
 
 	// Uses basic user access level for viewing adventure details
@@ -18,7 +18,7 @@
    	$group_name = $group_details['group_name'];
    	$group_description = $group_details['description'];
    	$group_status = $group_details['status'];
-   
+
    	mysqli_free_result($result);
 
 
@@ -74,21 +74,24 @@
 		      <li class="nav-item">
 		        <a class="nav-link" href="index.php"> Home </a>
 		      </li>
-		      <?php 
+		      <?php
                 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
                 	echo "<li class='nav-item'>
                 	<a class='nav-link' href='profile.php'>Profile <span class='sr-only'>(current)</span></a>
                 	</li>";
-                } 
+                }
                 ?>
 		      <li class="nav-item">
 		        <a class="nav-link" href="adventures.php">Adventures </a>
+		      </li>
+					<li class="nav-item">
+		        <a class="nav-link" href="trips.php"> Trips </a>
 		      </li>
 		      <li class="nav-item active">
 		        <a class="nav-link" href="groups.php"> Groups <span class="sr-only">(current)</span> </a>
 		      </li>
 		    </ul>
-		    <?php 
+		    <?php
                 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
                 	echo "<span class='navbar-nav'>
                 			<a href='logout.php' class='nav-link'> Log Out </a>
@@ -99,10 +102,10 @@
 		    			</span>";
                 }
                 ?>
-		    
-		    	
+
+
 		  </div>
-		</nav>	
+		</nav>
 
 		<!-- Shows the main details of a group -->
 		<h1> <?php echo $group_name; ?> </h1>
@@ -125,8 +128,8 @@
 			<!-- Body of the table, uses PHP to show the results of the query
 			 by using the $result variable defined in the PHP section of the file above -->
 			<tbody>
-				<?php 
-				
+				<?php
+
 					while($row = mysqli_fetch_array($result2)) {
 					echo "<tr>";
 					echo "<td> <a class='btn btn-link' role='button' href='user_details.php?id=" . $row['user_id'] . "'>" . $row['name'] .  "</td>";

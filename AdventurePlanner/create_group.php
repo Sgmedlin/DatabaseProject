@@ -4,13 +4,13 @@
 
     // Uses basic user access level for viewing adventure details
     require_once "session_config.php";
- 
+
     // Define variables and initialize with empty values
     $groupname = $description = $private = "";
     $groupname_err = $loggedin_err = $description_err = "";
     $group_id = 0;
 
-    // Check to see if a user is logged in. If they are not, display an error and 
+    // Check to see if a user is logged in. If they are not, display an error and
     // do not let the user create a group
     if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
         $loggedin_err = "You must be logged in to create a group.";
@@ -18,7 +18,7 @@
 
     // Process the form when the "Submit" button is pressed and a POST call is made
     if($_SERVER["REQUEST_METHOD"] == "POST"){
-        
+
         // Make sure the group name is not empty
         if(empty(trim($_POST["groupname"]))){
             $groupname_err = "Please enter a name for your group.";
@@ -28,19 +28,19 @@
             // Prepare a SELECT statement to check that the group name
             // entered does not already exist in the database table "Groups"
             $sql = "SELECT group_id FROM Groups WHERE group_name=?";
-            
+
             if($stmt = mysqli_prepare($link, $sql)){
                 // Bind variables to the prepared statement as parameters
                 mysqli_stmt_bind_param($stmt, "s", $param_groupname);
-                
+
                 // Set groupname parameter in the "mysqli_stmt_bind_param" function
                 $param_groupname = trim($_POST["groupname"]);
-                
+
                 // Attempt to execute the prepared statement
                 if(mysqli_stmt_execute($stmt)){
-                    // store result 
+                    // store result
                     mysqli_stmt_store_result($stmt);
-                    
+
                     // If the SELECT statement returns a result, the name is taken
                     // set the group name error variable
                     if(mysqli_stmt_num_rows($stmt) == 1){
@@ -52,14 +52,14 @@
                     echo "Oops! Something went wrong. Please try again later.";
                 }
             }
-             
+
             // Close the statement made above in mysqli_prepare
             mysqli_stmt_close($stmt);
         }
-        
+
         // Validate the description of the group and make sure it is not empty
         if(empty(trim($_POST["description"]))){
-            $description_err = "Please provide a description for your group.";     
+            $description_err = "Please provide a description for your group.";
         } else{
             $description = trim($_POST["description"]);
         }
@@ -108,7 +108,7 @@
             // Prepare an insert statement for the belongs_to table
             // This will set the group owner to the user who created the group
             $sql2 = "INSERT INTO belongs_to (user_id, group_id, membership_level) VALUES (?, ?, ?)";
-            
+
             $access_level = "Owner";
 
             if($stmt2 = mysqli_prepare($link, $sql2)){
@@ -119,7 +119,7 @@
                 $param_user_id = $_SESSION["id"];
                 $param_group_id = $group_id;
                 $param_access_level = $access_level;
-                
+
                 // Attempt to execute the prepared statement
                 if(mysqli_stmt_execute($stmt2)){
                     // Redirect to groups page upon success
@@ -128,16 +128,16 @@
                     echo "Something went wrong. Please try again later.";
                 }
             }
-             
+
             // Close statement
             mysqli_stmt_close($stmt2);
 
         }
-        
+
         // Close connection
         mysqli_close($link);
     }
- 
+
 ?>
 
 <!DOCTYPE html>
@@ -170,21 +170,24 @@
 		      <li class="nav-item">
 		        <a class="nav-link" href="index.php">Home</a>
 		      </li>
-		      <?php 
+		      <?php
                 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
                 	echo "<li class='nav-item'>
                 	<a class='nav-link' href='profile.php'>Profile <span class='sr-only'>(current)</span></a>
                 	</li>";
-                } 
+                }
                 ?>
 		      <li class="nav-item">
 		        <a class="nav-link" href="adventures.php">Adventures </a>
+		      </li>
+          <li class="nav-item">
+		        <a class="nav-link" href="trips.php"> Trips </a>
 		      </li>
 		      <li class="nav-item active">
 		        <a class="nav-link" href="groups.php"> Groups <span class="sr-only">(current)</span> </a>
 		      </li>
 		    </ul>
-    		<?php 
+    		<?php
                 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
                 	echo "<span class='navbar-nav'>
                 			<a href='logout.php' class='nav-link'> Log Out </a>
@@ -195,9 +198,9 @@
 		    			</span>";
                 }
                 ?>
-		    	
+
 		  </div>
-		</nav>	
+		</nav>
 
 		<h1> Create Group </h1>
 
@@ -211,7 +214,7 @@
 	                <label>Group Name</label>
 	                <input type="text" name="groupname" class="form-control" value="<?php echo $groupname; ?>">
 	                <span class="help-block"><?php echo $groupname_err; ?></span>
-	            </div>    
+	            </div>
 
                 <!-- Labels and input for "Description" insert -->
 	            <div class="form-group <?php echo (!empty($description_err)) ? 'has-error' : ''; ?>">

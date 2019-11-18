@@ -1,7 +1,7 @@
 <?php
     // Initialize the session
     session_start();
-     
+
     // Check if the user is logged in, if not then redirect him to login page
     if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
         header("location: login.php");
@@ -10,7 +10,7 @@
 
     // Include config file
     require_once "session_config.php";
-     
+
     // Define variables and initialize with empty values
     $name = $email = $bio = "";
     $name_err = $email_err = "";
@@ -23,9 +23,9 @@
      $result = mysqli_query($link, $query);
 
      $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
-     $name = $row['name']; 
-     $email = $row['email']; 
-     $bio = $row['bio']; 
+     $name = $row['name'];
+     $email = $row['email'];
+     $bio = $row['bio'];
 
      $rows = mysqli_num_rows($result);
 
@@ -43,7 +43,7 @@
      mysqli_free_result($result);
     // Processing form data when form is submitted
     if($_SERVER["REQUEST_METHOD"] == "POST"){
-     
+
         // Validate name field
         if(empty(trim($_POST["name"]))){
             $name_err = "Please enter your name.";
@@ -53,7 +53,7 @@
 
         // Validate email field
         if(empty(trim($_POST["email"]))){
-            $email_err = "Please enter your email";     
+            $email_err = "Please enter your email";
         } else{
             $email = trim($_POST["email"]);
         }
@@ -70,10 +70,10 @@
 
             // Check input errors before inserting in database
             if(empty($name_err) && empty($email_err)){
-                
+
                 // Prepare an insert statement
                 $sql = "UPDATE User_Profile SET email='$email', name='$name', bio='$bio' WHERE user_id='$param_id'";
-                 
+
                 if($stmt = mysqli_prepare($link, $sql)){
 
                     // Attempt to execute the prepared statement
@@ -84,7 +84,7 @@
                         $update_information_text = "Something went wrong... Please try again later.";
                     }
                 }
-                 
+
                 // Close statement
                 mysqli_stmt_close($stmt);
             }
@@ -93,18 +93,18 @@
         else{
             // Check input errors before inserting in database
             if(empty($name_err) && empty($email_err)){
-                
+
                 // Prepare an insert statement
                 $sql = "INSERT INTO User_Profile (user_id, email, name, bio) VALUES (?, ?, ?, ?)";
-                 
+
                 if($stmt = mysqli_prepare($link, $sql)){
                     // Bind variables to the prepared statement as parameters
                     mysqli_stmt_bind_param($stmt, "isss", $param_id, $email, $name, $bio);
-                    
+
                     // Set parameters
                     $param_username = $username;
                     $param_password = password_hash($password, PASSWORD_DEFAULT); // Creates a password hash
-                    
+
                     // Attempt to execute the prepared statement
                     if(mysqli_stmt_execute($stmt)){
                         // Redirect to welcome page
@@ -113,18 +113,18 @@
                         $update_information_text = "Something went wrong. Please try again later.";
                     }
                 }
-                 
+
                 // Close statement
                 mysqli_stmt_close($stmt);
             }
 
         }
-        
+
         // Close connection
         mysqli_close($link);
     }
 ?>
- 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -161,15 +161,18 @@
                 <a class="nav-link" href="adventures.php">Adventures</a>
               </li>
               <li class="nav-item">
+    		        <a class="nav-link" href="trips.php"> Trips </a>
+    		      </li>
+              <li class="nav-item">
                 <a class="nav-link" href="groups.php"> Groups </a>
               </li>
             </ul>
             <span class="navbar-nav">
                 <a href="logout.php" class="nav-link"> Log Out </a>
             </span>
-                
+
           </div>
-        </nav>  
+        </nav>
     <div class="wrapper">
             <h2>Profile</h2>
             <p><?php echo $welcome_message ?></p>
@@ -177,12 +180,12 @@
                 <div class="form-group <?php echo (!empty($username_err)) ? 'has-error' : ''; ?>">
                     <label>Username</label>
                     <input type="text" name="username" class="form-control" value="<?php echo htmlspecialchars($_SESSION["username"]); ?>">
-                </div>  
+                </div>
                 <div class="form-group <?php echo (!empty($name_err)) ? 'has-error' : ''; ?>">
                     <label>Name</label>
                     <input type="name" name="name" class="form-control" value="<?php echo $name; ?>">
                     <span class="help-block"><?php echo $name_err; ?></span>
-                </div>  
+                </div>
                 <div class="form-group <?php echo (!empty($email_err)) ? 'has-error' : ''; ?>">
                     <label>Email</label>
                     <input type="email" name="email" class="form-control" value="<?php echo $email; ?>">
@@ -199,6 +202,6 @@
                 </div>
                 <?php echo $update_information_text ?>
             </form>
-        </div>  
+        </div>
 </body>
 </html>

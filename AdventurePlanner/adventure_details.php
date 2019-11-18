@@ -52,21 +52,24 @@
 		      <li class="nav-item">
 		        <a class="nav-link" href="index.php"> Home </a>
 		      </li>
-		      <?php 
+		      <?php
                 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
                 	echo "<li class='nav-item'>
                 	<a class='nav-link' href='profile.php'>Profile <span class='sr-only'>(current)</span></a>
                 	</li>";
-                } 
+                }
                 ?>
 		      <li class="nav-item active">
 		        <a class="nav-link" href="adventures.php">Adventures <span class="sr-only">(current)</span></a>
+		      </li>
+					<li class="nav-item">
+		        <a class="nav-link" href="trips.php"> Trips </a>
 		      </li>
 		      <li class="nav-item">
 		        <a class="nav-link" href="groups.php"> Groups </a>
 		      </li>
 		    </ul>
-		    <?php 
+		    <?php
                 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
                 	echo "<span class='navbar-nav'>
                 			<a href='logout.php' class='nav-link'> Log Out </a>
@@ -77,10 +80,10 @@
 		    			</span>";
                 }
                 ?>
-		    
-		    	
+
+
 		  </div>
-		</nav>	
+		</nav>
 
 		<!-- Displays the information contained in the variables
 		set in the PHP section of the file -->
@@ -90,7 +93,7 @@
 		<p> Longitude: <?php echo $adventure_longitude; ?> </p>
 		<p> Description: <?php echo $adventure_description; ?> </p>
 
-		
+
 
 
 	</body>

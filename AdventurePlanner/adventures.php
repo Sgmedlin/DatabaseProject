@@ -47,21 +47,24 @@
 		      <li class="nav-item">
 		        <a class="nav-link" href="index.php"> Home </a>
 		      </li>
-		      <?php 
+		      <?php
                 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
                 	echo "<li class='nav-item'>
                 	<a class='nav-link' href='profile.php'>Profile <span class='sr-only'>(current)</span></a>
                 	</li>";
-                } 
+                }
                 ?>
 		      <li class="nav-item active">
 		        <a class="nav-link" href="adventures.php">Adventures <span class="sr-only">(current)</span></a>
+		      </li>
+					<li class="nav-item">
+		        <a class="nav-link" href="trips.php"> Trips </a>
 		      </li>
 		      <li class="nav-item">
 		        <a class="nav-link" href="groups.php"> Groups </a>
 		      </li>
 		    </ul>
-		    <?php 
+		    <?php
                 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
                 	echo "<span class='navbar-nav'>
                 			<a href='logout.php' class='nav-link'> Log Out </a>
@@ -72,10 +75,10 @@
 		    			</span>";
                 }
                 ?>
-		    
-		    	
+
+
 		  </div>
-		</nav>	
+		</nav>
 
 		<h1> Adventures </h1>
 
@@ -88,12 +91,12 @@
 				<th scope="col">Latitude</th>
 				<th scope="col">Longitude</th>
 			</thead>
-			
+
 			<!-- Body of the table, uses PHP to show the results of the query
-			on the Adventures table by using the $result variable defined in the 
+			on the Adventures table by using the $result variable defined in the
 			PHP section of the file above -->
 			<tbody>
-				<?php 
+				<?php
 					while($row = mysqli_fetch_array($result)) {
 						echo "<tr>";
 						echo "<td> <a class='btn btn-link' role='button' href='adventure_details.php?id=" . $row['adventure_id'] . "'>" . $row['name'] .  "</td>";
