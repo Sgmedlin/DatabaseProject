@@ -6,6 +6,29 @@
 	// Uses basic user access level for viewing adventure details
 	require_once "session_config.php";
 
+
+	// All of the below code checks to see if a user has created a user profile. If they have, it will allow them to join.
+	// If they have not, it disables the join button and prompts the user to create a user profile.
+	$profile_error = $profile_btn = "";
+
+	$param_id = $_SESSION["id"];
+
+    $query = "SELECT * FROM User_Profile WHERE user_id=$param_id LIMIT 1";
+    $result = mysqli_query($link, $query);
+
+    $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+    $rows = mysqli_num_rows($result);
+
+    if ($rows > 0){
+       $profile_btn = "<input type='submit' class='btn btn-primary' value='Join this group'>";
+    }
+    else{
+       $profile_error = "<p> Some features will not be available until you create your user profile. To create your profile, please click <a href='profile.php'>here</a>. </p>";
+       $profile_btn = "<input type='submit' class='btn btn-primary' value='Join this group' disabled>";
+    }
+    mysqli_free_result($result);
+
+
 	// Retrieves the group ID from the GET information in groups.php page
 	// Uses result of query to show information about the group in question
    	$sql = "SELECT * FROM Groups WHERE group_id = '".$_GET['id']."'";
@@ -159,7 +182,8 @@
 		</table>
 		</div>
 			<form method="post">
-				<input type="submit" class="btn btn-primary" value="Join this group">
+				<?php echo $profile_btn; ?>
+				<?php echo $profile_error; ?>
 			</form>
 		</div>
 		<!-- Shows the members of a group -->
