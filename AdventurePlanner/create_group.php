@@ -7,7 +7,7 @@
 
     // Define variables and initialize with empty values
     $groupname = $description = $private = "";
-    $groupname_err = $loggedin_err = $description_err = "";
+    $groupname_err = $loggedin_err = $description_err = $gear_err = "";
     $group_id = 0;
 
     // Check to see if a user is logged in. If they are not, display an error and
@@ -64,6 +64,36 @@
             $description = trim($_POST["description"]);
         }
 
+        if(empty(trim($_POST["gear_name"]))){
+            $gear_err = "Please provide a gear name";     
+        } else{
+            $gear_id = trim($_POST["gear_name"]);
+        }
+
+        if(empty(trim($_POST["gear_type"]))){
+            $gear_err = "Please provide a gear type";     
+        } else{
+            $gear_type = trim($_POST["gear_type"]);
+        }
+
+        if(empty(trim($_POST["gear_status"]))){
+            $gear_err = "Please provide a gear status.";     
+        } else{
+            $gear_status = trim($_POST["gear_status"]);
+        }
+
+        if(empty(trim($_POST["gear_brand"]))){
+            $gear_err = "Please provide a gear brand";     
+        } else{
+            $gear_brand = trim($_POST["gear_brand"]);
+        }
+
+        if(empty(trim($_POST["gear_condition"]))){
+            $gear_err = "Please provide a condition";     
+        } else{
+            $gear_condition = trim($_POST["gear_condition"]);
+        }  
+
         // Check the result of the checkbox in the form to decide whether to make the group private or not
         if(isset($_POST['privateCheckbox']) && $_POST['privateCheckbox'] == 'YES'){
         	$private = "Closed";
@@ -96,18 +126,16 @@
                     echo "Could not create group";
                 } else{
                     $group_id = mysqli_insert_id($link);
-
+                    printf($stmt0->error);
                 }
-
+                // Close the statement made above in mysqli_prepare
+                mysqli_stmt_close($stmt0);
             }
-
-            // Close the statement made above in mysqli_prepare
-            mysqli_stmt_close($stmt0);
 
 
             // Prepare an insert statement for the belongs_to table
             // This will set the group owner to the user who created the group
-            $sql2 = "INSERT INTO belongs_to (user_id, group_id, membership_level) VALUES (?, ?, ?)";
+            $sql2 = "INSERT INTO belongs_to VALUES (?, ?, ?)";
 
             $access_level = "Owner";
 
@@ -123,14 +151,44 @@
                 // Attempt to execute the prepared statement
                 if(mysqli_stmt_execute($stmt2)){
                     // Redirect to groups page upon success
-                    header("location: groups.php");
+                    // header("location: groups.php");
+                    echo "success";
                 } else{
                     echo "Something went wrong. Please try again later.";
                 }
+                // Close statement
+                mysqli_stmt_close($stmt2);
+            }
+            $sql3 = "INSERT INTO Gear VALUES (?, ?, ?, ?, ?)";
+            if($stmt3 = mysqli_prepare($link, $sql3)){
+                mysqli_stmt_bind_param($stmt3, "sssss", $gear_id, $gear_type, $gear_status, $gear_brand, $gear_condition);
+                
+                if(mysqli_stmt_execute($stmt3)){
+                    // Redirect to groups page upon success
+                    //header("location: groups.php");
+                    echo "success";
+                } else{
+                    printf($stmt3->error);
+                    //echo "Something went wrong. Please try again later.";
+                }
+                // If the insert didn't affect any rows, the group was not successfully created.
+                mysqli_stmt_close($stmt3);
             }
 
-            // Close statement
-            mysqli_stmt_close($stmt2);
+            $sql4 = "INSERT INTO Has VALUES (?,?)";
+            if($stmt4 = mysqli_prepare($link, $sql4)){
+                mysqli_stmt_bind_param($stmt4, "is", $group_id, $gear_id);
+                
+                if(mysqli_stmt_execute($stmt4)){
+                    // Redirect to groups page upon success
+                    header("location: groups.php");
+                } else{
+                    printf($stmt4->error);
+                    echo "Something went wrong. Please try again later.";
+                }
+                // If the insert didn't affect any rows, the group was not successfully created.
+                mysqli_stmt_close($stmt4);
+            }
 
         }
 
@@ -223,6 +281,31 @@
 	                <span class="help-block"><?php echo $description_err; ?></span>
 	            </div>
 
+                <div class="table-responsive <?php echo (!empty($gear_err)) ? 'has-error' : ''; ?>">
+                    <table class="table table-bordered" id="crud_table" name="crud_table">
+                        <tr>
+                            <th width="18%">Gear Name</th>
+                            <th width="18%">Gear Type</th>
+                            <th width="18%">Gear Status</th>
+                            <th width="18%">Gear Brand</th>
+                            <th width="18%">Gear Condition</th>
+                            <th width="10%"></th>
+                        </tr>
+                        <tr>
+                            <td name="gearTable"><input type="text" name="gear_name"></td>
+                            <td name="gearTable"><input type="text" name="gear_type"></td>
+                            <td name="gearTable"><input type="text" name="gear_status"></td>
+                            <td name="gearTable"><input type="text" name="gear_brand"></td>
+                            <td name="gearTable"><input type="text" name="gear_condition"></td>
+                            <td></td>
+                        </tr>
+                        <span class="help-block"><?php echo $gear_err; ?></span>
+                    </table>
+                    <div align="right">
+                        <button type="button" name="add" id="add" class="btn btn-success btn-xs">+</button>
+                    </div>
+                </div> 
+
                 <!-- Checkbox for deciding if a group is public or private -->
 	            <div class="form-group form-check">
     				<input type="checkbox" class="form-check-input" name="privateCheckbox" value="YES" id="check">
@@ -235,7 +318,27 @@
 	                <input type="reset" class="btn btn-default" value="Reset">
 	            </div>
 	        </form>
-
+            <script>
+                $(document).ready(function(){
+                    var count = 1;
+                    $('#add').click(function(){
+                        count = count + 1;
+                        var html_code = "<tr id='row"+count+"'>";
+                        html_code += "<td name='gearTable'><input type='text' name='gear_name"+count+"'></td>";
+                        html_code += "<td name='gearTable'><input type='text' name='gear_type"+count+"'></td>";
+                        html_code += "<td name='gearTable'><input type='text' name='gear_status"+count+"'></td>";
+                        html_code += "<td name='gearTable'><input type='text' name='gear_brand"+count+"'></td>";
+                        html_code += "<td name='gearTable'><input type='text' name='gear_condition"+count+"'></td>";
+                        html_code += "<td><button type='button' name='remove' data-row='row"+count+"' class='btn btn-danger btn-xs remove'>-</button></td>";
+                        html_code += "</tr>";
+                        $('#crud_table').append(html_code);
+                    });
+                    $(document).on('click', '.remove', function(){
+                        var delete_row = $(this).data("row");
+                        $('#'+delete_row).remove();
+                    });
+                })
+            </script>
 	</body>
 
 </html>

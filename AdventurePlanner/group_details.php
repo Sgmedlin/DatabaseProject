@@ -34,13 +34,40 @@
 
    	mysqli_free_result($result1);
 
+	$sql2 = "SELECT `gear_id`, `type`, `status`, `brand`, `condition` FROM Gear NATURAL JOIN Has WHERE group_id = ".$_GET['id'];
+   	$gear_result = mysqli_query($link, $sql2);
+   	$gear_details = mysqli_fetch_assoc($gear_result);
+
+   	$gear_name = $gear_details["gear_id"];
+	$gear_type = $gear_details['type'];
+	$gear_status = $gear_details['status'];
+	$gear_brand = $gear_details['brand'];
+	$gear_condition = $gear_details['condition'];
+
+   	mysqli_free_result($gear_result);
 	// Query to select all of the members of a group
-   	$sql2 = "SELECT user_id, name, membership_level FROM User_Profile NATURAL JOIN belongs_to NATURAL JOIN Groups WHERE group_id=".$_GET['id'];
+   	$sql3 = "SELECT user_id, name, membership_level FROM User_Profile NATURAL JOIN belongs_to NATURAL JOIN Groups WHERE group_id=".$_GET['id'];
 
    	// Store the query in the "result" variable to iteratively list the results
 	// in the HTML below
-   	$result2 = mysqli_query($link, $sql2);
+   	$result3 = mysqli_query($link, $sql3);
 
+	if($_SERVER["REQUEST_METHOD"] == "POST"){
+		$sqlx = "INSERT INTO belongs_to VALUES (?, ?, ?)";
+        if($stmtx = mysqli_prepare($link, $sqlx)){
+            mysqli_stmt_bind_param($stmtx, "iis", $param_user_id, $param_group_id, $param_membership);
+			$param_user_id = $_SESSION["id"];
+			$param_group_id = $_GET['id'];
+			$param_membership = "Member";
+            if(mysqli_stmt_execute($stmtx)){
+                echo "success";
+            } else{
+                printf($stmtx->error);
+            }
+                // If the insert didn't affect any rows, the group was not successfully created.
+            mysqli_stmt_close($stmtx);
+        }
+	}
 ?>
 
 <!DOCTYPE html>
@@ -112,7 +139,29 @@
 		<p> Owner:<?php echo "<a class='btn btn-link' role='button' href='user_details.php?id=" . $owner_id . "'>" . $owner .  "</a>"; ?> </p>
 		<p> Status: <?php echo $group_status; ?>  </p>
 		<p> Description: <?php echo $group_description; ?> </p>
-
+		<p> Gear : The available gears are: </p>
+		<div class="table-responsive">
+		<table class="table table-bordered" id="crud_table">
+			<tr>
+				<th width="20%">Gear Name</th>
+				<th width="20%">Gear Type</th>
+				<th width="20%">Gear Status</th>
+				<th width="20%">Gear Brand</th>
+				<th width="20%">Gear Condition</th>
+			</tr>
+			<tr>
+				<th><?php echo $gear_name; ?></th>
+				<th><?php echo $gear_type; ?></th>
+				<th><?php echo $gear_status; ?></th>
+				<th><?php echo $gear_brand; ?></th>
+				<th><?php echo $gear_condition; ?></th>
+			</tr>
+		</table>
+		</div>
+			<form method="post">
+				<input type="submit" class="btn btn-primary" value="Join this group">
+			</form>
+		</div>
 		<!-- Shows the members of a group -->
 		<h2>Members:</h2>
 
@@ -123,6 +172,7 @@
 			<thead>
 				<th scope="col">Name</th>
 				<th scope="col">Role</th>
+				<th scope="col">Gear</th>
 			</thead>
 
 			<!-- Body of the table, uses PHP to show the results of the query
@@ -130,10 +180,11 @@
 			<tbody>
 				<?php
 
-					while($row = mysqli_fetch_array($result2)) {
+					while($row = mysqli_fetch_array($result3)) {
 					echo "<tr>";
 					echo "<td> <a class='btn btn-link' role='button' href='user_details.php?id=" . $row['user_id'] . "'>" . $row['name'] .  "</td>";
 					echo "<td>" . $row['membership_level'] . "</td>";
+					echo "<td>" . "</td>"; 
 					echo "</tr>";
 					}
 					mysqli_close($con);
