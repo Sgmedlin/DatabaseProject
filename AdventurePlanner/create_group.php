@@ -49,7 +49,7 @@
                         $groupname = trim($_POST["groupname"]);
                     }
                 } else{
-                    echo "Oops! Something went wrong. Please try again later.";
+                    echo Oops! Something went wrong. Please try again later;
                 }
             }
 
@@ -96,7 +96,6 @@
                     echo "Could not create group";
                 } else{
                     $group_id = mysqli_insert_id($link);
-
                 }
 
             }
@@ -180,12 +179,19 @@
 		      <li class="nav-item">
 		        <a class="nav-link" href="adventures.php">Adventures </a>
 		      </li>
-          <li class="nav-item">
+					<li class="nav-item">
 		        <a class="nav-link" href="trips.php"> Trips </a>
 		      </li>
-		      <li class="nav-item active">
-		        <a class="nav-link" href="groups.php"> Groups <span class="sr-only">(current)</span> </a>
-		      </li>
+
+			<li class="nav-item dropdown">
+      				<a class="nav-link dropdown-toggle" href="groups.php" id="navbardrop" data-toggle="dropdown">
+        				Groups
+      				</a>
+      			 	<div class="dropdown-menu">
+        				<a class="dropdown-item" href="create_group.php">Create a Group</a>
+        				<a class="dropdown-item" href="groups.php">List of Groups</a>
+      				</div>
+   			</li>
 		    </ul>
     		<?php
                 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
@@ -201,7 +207,6 @@
 
 		  </div>
 		</nav>
-
 		<h1> Create Group </h1>
 
         <!-- This will display an error if the user is not logged in -->
@@ -213,7 +218,7 @@
 	            <div class="form-group <?php echo (!empty($groupname_err)) ? 'has-error' : ''; ?>">
 	                <label>Group Name</label>
 	                <input type="text" name="groupname" class="form-control" value="<?php echo $groupname; ?>">
-	                <span class="help-block"><?php echo $groupname_err; ?></span>
+	                <span class="help-block" style="color:red;text-align:center;"><?php echo $groupname_err; ?></span>
 	            </div>
 
                 <!-- Labels and input for "Description" insert -->

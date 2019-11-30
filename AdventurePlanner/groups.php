@@ -32,7 +32,6 @@
 	</head>
 
 	<body>
-
 		<!-- NavBar must be changed in individual files -->
 		<nav class="navbar navbar-expand-lg navbar-light bg-light">
 		  <a class="navbar-brand" href="#">Adventure Planner</a>
@@ -58,9 +57,16 @@
 					<li class="nav-item">
 		        <a class="nav-link" href="trips.php"> Trips </a>
 		      </li>
-		      <li class="nav-item active">
-		        <a class="nav-link" href="groups.php"> Groups <span class="sr-only">(current)</span> </a>
-		      </li>
+
+			<li class="nav-item dropdown">
+      				<a class="nav-link dropdown-toggle" href="groups.php" id="navbardrop" data-toggle="dropdown">
+        				Groups
+      				</a>
+      			 	<div class="dropdown-menu">
+        				<a class="dropdown-item" href="create_group.php">Create a Group</a>
+        				<a class="dropdown-item" href="groups.php">List of Groups</a>
+      				</div>
+   			</li>
 		    </ul>
     		<?php
                 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
@@ -78,11 +84,9 @@
 		</nav>
 
 		<h1> Groups Page </h1>
-		<!-- Takes the user to create_group.php table to create a group -->
-		<a href="create_group.php">Create Group</a>
 
 		<!-- Table for showing the results of the query on Groups table -->
-		<table class="table table-hover table-sm">
+		<table class="table table-hover table-sm table-striped">
 
 			<!-- Header of the table -->
 			<thead>

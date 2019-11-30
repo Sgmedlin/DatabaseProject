@@ -34,8 +34,7 @@
 	</head>
 
 	<body>
-
-		<!-- NavBar must be changed in individual files -->
+<!-- NavBar must be changed in individual files -->
 		<nav class="navbar navbar-expand-lg navbar-light bg-light">
 		  <a class="navbar-brand" href="#">Adventure Planner</a>
 		  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,7 +44,7 @@
 		  <div class="collapse navbar-collapse" id="navbarSupportedContent">
 		    <ul class="navbar-nav mr-auto">
 		      <li class="nav-item">
-		        <a class="nav-link" href="index.php"> Home </a>
+		        <a class="nav-link" href="index.php">Home</a>
 		      </li>
 		      <?php
                 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
@@ -54,17 +53,24 @@
                 	</li>";
                 }
                 ?>
-		      <li class="nav-item active">
+		      <li class="nav-item">
 		        <a class="nav-link" href="adventures.php">Adventures <span class="sr-only">(current)</span></a>
 		      </li>
 					<li class="nav-item">
 		        <a class="nav-link" href="trips.php"> Trips </a>
 		      </li>
-		      <li class="nav-item">
-		        <a class="nav-link" href="groups.php"> Groups </a>
-		      </li>
+
+			<li class="nav-item dropdown">
+      				<a class="nav-link dropdown-toggle" href="groups.php" id="navbardrop" data-toggle="dropdown">
+        				Groups
+      				</a>
+      			 	<div class="dropdown-menu">
+        				<a class="dropdown-item" href="create_group.php">Create a Group</a>
+        				<a class="dropdown-item" href="groups.php">List of Groups</a>
+      				</div>
+   			</li>
 		    </ul>
-		    <?php
+    		<?php
                 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
                 	echo "<span class='navbar-nav'>
                 			<a href='logout.php' class='nav-link'> Log Out </a>
@@ -76,14 +82,12 @@
                 }
                 ?>
 
-
 		  </div>
 		</nav>
-
 		<h1> Adventures </h1>
 
 		<!-- Table for showing the results of the query on Adventures table -->
-		<table class="table table-hover table-sm">
+		<table class="table table-hover table-sm table-striped">
 
 			<!-- Header of the table -->
 			<thead>
