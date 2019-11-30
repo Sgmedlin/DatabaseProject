@@ -40,7 +40,7 @@
 		  <div class="collapse navbar-collapse" id="navbarSupportedContent">
 		    <ul class="navbar-nav mr-auto">
 		      <li class="nav-item">
-		        <a class="nav-link" href="index.php">Home</a>
+		        <a class="nav-link" href="index.php">Home <span class="sr-only">(current)</span></a>
 		      </li>
 		      <?php
                 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
@@ -103,7 +103,7 @@
                         </div><!-- end carousel-caption -->
     		</div>
     		 <div class="carousel-item">
-      			<img src="shoes.jpg" alt="Chicago" width="1100" height="500">
+      			<img src="mountain.jpg" alt="Chicago" width="1100" height="500">
 			<div class="carousel-caption">
                     		<h1>Outdoors Adventure Planner</h1>
 				<p>Your Adventure Begins Here</p>

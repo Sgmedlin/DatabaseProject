@@ -54,7 +54,7 @@
                 }
                 ?>
 		      <li class="nav-item">
-		        <a class="nav-link" href="adventures.php">Adventures </a>
+		        <a class="nav-link" href="adventures.php">Adventures <span class="sr-only">(current)</span></a>
 		      </li>
 					<li class="nav-item">
 		        <a class="nav-link" href="trips.php"> Trips </a>

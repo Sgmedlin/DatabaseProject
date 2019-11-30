@@ -84,8 +84,6 @@
 		</nav>
 
 		<h1> Groups Page </h1>
-		<!-- Takes the user to create_group.php table to create a group -->
-		<a href="create_group.php">Create Group</a>
 
 		<!-- Table for showing the results of the query on Groups table -->
 		<table class="table table-hover table-sm table-striped">

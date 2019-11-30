@@ -126,7 +126,7 @@
 		<h2><?php echo $user_name; ?>'s Groups:</h2>
 
 		<!-- Table for showing the groups a user is a member of -->
-		<table class="table table-hover table-sm">
+		<table class="table table-hover table-sm table-striped">
 
 			<!-- Header of the table -->
 			<thead>

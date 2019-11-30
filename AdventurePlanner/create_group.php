@@ -49,7 +49,7 @@
                         $groupname = trim($_POST["groupname"]);
                     }
                 } else{
-                    echo "Oops! Something went wrong. Please try again later.";
+                    echo Oops! Something went wrong. Please try again later;
                 }
             }
 
@@ -96,7 +96,6 @@
                     echo "Could not create group";
                 } else{
                     $group_id = mysqli_insert_id($link);
-
                 }
 
             }
@@ -219,7 +218,7 @@
 	            <div class="form-group <?php echo (!empty($groupname_err)) ? 'has-error' : ''; ?>">
 	                <label>Group Name</label>
 	                <input type="text" name="groupname" class="form-control" value="<?php echo $groupname; ?>">
-	                <span class="help-block"><?php echo $groupname_err; ?></span>
+	                <span class="help-block" style="color:red;text-align:center;"><?php echo $groupname_err; ?></span>
 	            </div>
 
                 <!-- Labels and input for "Description" insert -->
