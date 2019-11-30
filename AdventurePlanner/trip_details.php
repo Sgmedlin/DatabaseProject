@@ -47,7 +47,7 @@
 
 		<!-- NavBar must be changed in individual files -->
 		<nav class="navbar navbar-expand-lg navbar-light bg-light">
-		  <a class="navbar-brand" href="#">Trip Planner</a>
+		  <a class="navbar-brand" href="#">Adventure Planner</a>
 		  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 		    <span class="navbar-toggler-icon"></span>
 		  </button>
@@ -55,7 +55,7 @@
 		  <div class="collapse navbar-collapse" id="navbarSupportedContent">
 		    <ul class="navbar-nav mr-auto">
 		      <li class="nav-item">
-		        <a class="nav-link" href="index.php"> Home </a>
+		        <a class="nav-link" href="index.php">Home</a>
 		      </li>
 		      <?php
                 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
@@ -65,16 +65,23 @@
                 }
                 ?>
 		      <li class="nav-item">
-		        <a class="nav-link" href="adventures.php">Adventures <span class="sr-only">(current)</span></a>
+		        <a class="nav-link" href="adventures.php">Adventures </a>
 		      </li>
-					<li class="nav-item active">
-		        <a class="nav-link" href="trips.php">Trips <span class="sr-only">(current)</span></a>
+					<li class="nav-item">
+		        <a class="nav-link" href="trips.php"> Trips </a>
 		      </li>
-		      <li class="nav-item">
-		        <a class="nav-link" href="groups.php"> Groups </a>
-		      </li>
+
+			<li class="nav-item dropdown">
+      				<a class="nav-link dropdown-toggle" href="groups.php" id="navbardrop" data-toggle="dropdown">
+        				Groups
+      				</a>
+      			 	<div class="dropdown-menu">
+        				<a class="dropdown-item" href="create_group.php">Create a Group</a>
+        				<a class="dropdown-item" href="groups.php">List of Groups</a>
+      				</div>
+   			</li>
 		    </ul>
-		    <?php
+    		<?php
                 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
                 	echo "<span class='navbar-nav'>
                 			<a href='logout.php' class='nav-link'> Log Out </a>
@@ -85,7 +92,6 @@
 		    			</span>";
                 }
                 ?>
-
 
 		  </div>
 		</nav>

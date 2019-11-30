@@ -18,6 +18,14 @@
 
 		<title>Home</title>
 
+		<!-- FOR CAROUSAL - make image responsive -->
+		<style>
+  		/* Make the image fully responsive */
+  		.carousel-inner img {
+      			width: 100%;
+     			height: 700px;
+  		}
+  		</style>
 	</head>
 
 	<body>
@@ -31,9 +39,8 @@
 
 		  <div class="collapse navbar-collapse" id="navbarSupportedContent">
 		    <ul class="navbar-nav mr-auto">
-
-		      <li class="nav-item active">
-		        <a class="nav-link" href="index.php"> Home <span class="sr-only">(current)</span></a>
+		      <li class="nav-item">
+		        <a class="nav-link" href="index.php">Home</a>
 		      </li>
 		      <?php
                 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
@@ -43,16 +50,23 @@
                 }
                 ?>
 		      <li class="nav-item">
-		        <a class="nav-link" href="adventures.php">Adventures</a>
+		        <a class="nav-link" href="adventures.php">Adventures </a>
 		      </li>
 					<li class="nav-item">
 		        <a class="nav-link" href="trips.php"> Trips </a>
 		      </li>
-		      <li class="nav-item">
-		        <a class="nav-link" href="groups.php"> Groups </a>
-		      </li>
+
+			<li class="nav-item dropdown">
+      				<a class="nav-link dropdown-toggle" href="groups.php" id="navbardrop" data-toggle="dropdown">
+        				Groups
+      				</a>
+      			 	<div class="dropdown-menu">
+        				<a class="dropdown-item" href="create_group.php">Create a Group</a>
+        				<a class="dropdown-item" href="groups.php">List of Groups</a>
+      				</div>
+   			</li>
 		    </ul>
-		    <?php
+    		<?php
                 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
                 	echo "<span class='navbar-nav'>
                 			<a href='logout.php' class='nav-link'> Log Out </a>
@@ -67,8 +81,54 @@
 		  </div>
 		</nav>
 
-		<h1> Outdoors Adventure Planner </h1>
-		<p> This is just a simple home page for the application </p>
+		<!-- FOR CAROUSAL -->
+	
+		<div id="demo" class="carousel slide" data-ride="carousel">
+
+  		<!-- Indicators -->
+  		<ul class="carousel-indicators">
+   			<li data-target="#demo" data-slide-to="0" class="active"></li>
+   			<li data-target="#demo" data-slide-to="1"></li>
+    			<li data-target="#demo" data-slide-to="2"></li>
+ 		</ul>
+  
+  		<!-- The slideshow -->
+ 		<div class="carousel-inner">
+    	 	 <div class="carousel-item active">
+      			<img src="ireland.jpg" alt="Los Angeles" width="1100" height="500">
+			<div class="carousel-caption">
+                    		<h1>Outdoors Adventure Planner</h1>
+				<p>Your Adventure Begins Here</p>
+				<a href="login.php" class="btn btn-info">Start Now</a>
+                        </div><!-- end carousel-caption -->
+    		</div>
+    		 <div class="carousel-item">
+      			<img src="shoes.jpg" alt="Chicago" width="1100" height="500">
+			<div class="carousel-caption">
+                    		<h1>Outdoors Adventure Planner</h1>
+				<p>Your Adventure Begins Here</p>
+				<a href="login.php" class="btn btn-info">Start Now</a>
+                        </div><!-- end carousel-caption -->
+
+    		</div>
+    		 <div class="carousel-item">
+      			<img src="iceland.jpg" alt="New York" width="1100" height="500">
+			<div class="carousel-caption">
+                    		<h1>Outdoors Adventure Planner</h1>
+				<p>Your Adventure Begins Here</p>
+				<a href="login.php" class="btn btn-info">Start Now</a>
+                        </div><!-- end carousel-caption -->
+    	 	</div>
+  		</div>
+  
+  	<!-- Left and right controls -->
+  	<a class="carousel-control-prev" href="#demo" data-slide="prev">
+    		<span class="carousel-control-prev-icon"></span>
+  	</a>
+  	<a class="carousel-control-next" href="#demo" data-slide="next">
+    		<span class="carousel-control-next-icon"></span>
+  	</a>
+	</div>
 
 	</body>
 

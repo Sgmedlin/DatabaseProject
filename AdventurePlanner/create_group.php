@@ -180,12 +180,19 @@
 		      <li class="nav-item">
 		        <a class="nav-link" href="adventures.php">Adventures </a>
 		      </li>
-          <li class="nav-item">
+					<li class="nav-item">
 		        <a class="nav-link" href="trips.php"> Trips </a>
 		      </li>
-		      <li class="nav-item active">
-		        <a class="nav-link" href="groups.php"> Groups <span class="sr-only">(current)</span> </a>
-		      </li>
+
+			<li class="nav-item dropdown">
+      				<a class="nav-link dropdown-toggle" href="groups.php" id="navbardrop" data-toggle="dropdown">
+        				Groups
+      				</a>
+      			 	<div class="dropdown-menu">
+        				<a class="dropdown-item" href="create_group.php">Create a Group</a>
+        				<a class="dropdown-item" href="groups.php">List of Groups</a>
+      				</div>
+   			</li>
 		    </ul>
     		<?php
                 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
@@ -201,7 +208,6 @@
 
 		  </div>
 		</nav>
-
 		<h1> Create Group </h1>
 
         <!-- This will display an error if the user is not logged in -->

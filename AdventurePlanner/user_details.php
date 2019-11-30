@@ -35,6 +35,15 @@
 	// in the HTML below
    	$result2 = mysqli_query($link, $sql2);
 
+	$sql3 = "SELECT * FROM User_Profile NATURAL JOIN Drives NATURAL JOIN Car WHERE user_id = '".$_GET['id']."'";
+   	$result3 = mysqli_query($link, $sql3);
+   	$driver_details = mysqli_fetch_assoc($result3);
+	$driver = $driver_details['user_id'];
+	$seats = $driver_details['num_seats'];
+
+	mysqli_free_result($result3);
+
+
 ?>
 
 <!DOCTYPE html>
@@ -66,7 +75,7 @@
 		  <div class="collapse navbar-collapse" id="navbarSupportedContent">
 		    <ul class="navbar-nav mr-auto">
 		      <li class="nav-item">
-		        <a class="nav-link" href="index.php"> Home </a>
+		        <a class="nav-link" href="index.php">Home</a>
 		      </li>
 		      <?php
                 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
@@ -81,11 +90,18 @@
 					<li class="nav-item">
 		        <a class="nav-link" href="trips.php"> Trips </a>
 		      </li>
-		      <li class="nav-item active">
-		        <a class="nav-link" href="groups.php"> Groups <span class="sr-only">(current)</span> </a>
-		      </li>
+
+			<li class="nav-item dropdown">
+      				<a class="nav-link dropdown-toggle" href="groups.php" id="navbardrop" data-toggle="dropdown">
+        				Groups
+      				</a>
+      			 	<div class="dropdown-menu">
+        				<a class="dropdown-item" href="create_group.php">Create a Group</a>
+        				<a class="dropdown-item" href="groups.php">List of Groups</a>
+      				</div>
+   			</li>
 		    </ul>
-		    <?php
+    		<?php
                 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
                 	echo "<span class='navbar-nav'>
                 			<a href='logout.php' class='nav-link'> Log Out </a>
@@ -97,7 +113,6 @@
                 }
                 ?>
 
-
 		  </div>
 		</nav>
 
@@ -106,7 +121,8 @@
 		<p> Username: <?php echo $username; ?> </p>
 		<p> Email: <?php echo $user_email; ?>  </p>
 		<p> Bio: <?php echo $user_bio; ?> </p>
-
+		<p> Drives: <?php if($driver) {echo "Yes";} else {echo "No";} ?> </p>
+		<p> Number of Seats Available: <?php if($driver) {echo $seats;} else {echo "N/A";} ?> </p>
 		<h2><?php echo $user_name; ?>'s Groups:</h2>
 
 		<!-- Table for showing the groups a user is a member of -->
