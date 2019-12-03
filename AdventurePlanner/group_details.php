@@ -109,9 +109,11 @@
                     if (mysqli_multi_query($link, $checkQuery)){
 						//unset($_SESSION['array_name']);
 						//print("check: " . $checkQuery);
+						
                     }
                     else{
 						//echo "reporting";
+						echo "error";
                     }
                 }
                 else{
@@ -300,7 +302,7 @@
 		});
 		document.querySelector('.modal-close').addEventListener('click', function(){
 			document.querySelector('.bg-modal').style.display = 'none';
-		})
+		});
 	</script>
 	</body>
 

@@ -129,7 +129,9 @@
                 // Close statement
                 mysqli_stmt_close($stmt2);
             }
-            $array_name = $_SESSION["array_name"];
+            if(isset($_SESSION["array_name"])){
+                $array_name = $_SESSION["array_name"];
+            }
             if (!empty($array_name)){
                 $hasQuery = '';
                 for ($count = 0; $count < count($array_name); $count++){
@@ -140,6 +142,7 @@
                 if ($hasQuery != ''){
                     if (mysqli_multi_query($link, $hasQuery)){
                         //unset($_SESSION['array_name']);
+                        header("location: groups.php");
                     }
                     else{
                         echo 'Error';
@@ -328,7 +331,7 @@
                             brand:brand, 
                             condition:condition},
                         success:function(result){
-                            window.location.href = "groups.php";
+                            //window.location.href = "groups.php";
                         },
                         error:function(result){
                             alert("error");
