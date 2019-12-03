@@ -87,6 +87,7 @@
 		//print($date);
 		$name = array();
 		$user_id = $_SESSION['id'];
+		$group_id = $_GET['id'];
 		$sql4 = "SELECT `gear_id`, `name`, `type`, `status`, `brand`, `condition` FROM Gear NATURAL JOIN Has WHERE group_id = ".$_GET['id'];
    		$gear_r = mysqli_query($link, $sql4);
 		while($r = mysqli_fetch_array($gear_r)) {
@@ -99,7 +100,7 @@
 					if(isset($_POST["privateCheckbox$count"])){
 						//$isDefined = true;
 						$checkQuery .= '
-                        	INSERT INTO checks_out VALUES("'.$user_id.'", "'.$name[$count].'", "'.$date.'", NULL);  
+                        	INSERT INTO checks_out VALUES("'.$user_id.'", "'.$name[$count].'", "'.$group_id.'", "'.$date.'", NULL);  
                     	';
 					};
 				}
@@ -276,7 +277,7 @@
 					echo "<tr>";
 					echo "<td> <a class='btn btn-link' role='button' href='user_details.php?id=" . $row['user_id'] . "'>" . $row['name'] .  "</td>";
 					echo "<td>" . $row['membership_level'] . "</td>";
-					$sql4 = "SELECT `name`, `user_id` FROM checks_out NATURAL JOIN Gear WHERE user_id=".$row['user_id'];
+					$sql4 = "SELECT `name`, `user_id` FROM checks_out NATURAL JOIN Gear WHERE user_id=".$row['user_id'] ." AND group_id=".$_GET['id'];
 					$result4 = mysqli_query($link, $sql4);
 					$value = '';
 					while ($row4 = mysqli_fetch_array($result4)){
