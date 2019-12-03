@@ -7,7 +7,7 @@
 
     // Define variables and initialize with empty values
     $groupname = $description = $private = "";
-    $groupname_err = $loggedin_err = $description_err = $gear_err = "";
+    $groupname_err = $loggedin_err = $description_err = "";
     $group_id = 0;
 
     // Check to see if a user is logged in. If they are not, display an error and
@@ -62,37 +62,7 @@
             $description_err = "Please provide a description for your group.";
         } else{
             $description = trim($_POST["description"]);
-        }
-
-        if(empty(trim($_POST["gear_name"]))){
-            $gear_err = "Please provide a gear name";     
-        } else{
-            $gear_id = trim($_POST["gear_name"]);
-        }
-
-        if(empty(trim($_POST["gear_type"]))){
-            $gear_err = "Please provide a gear type";     
-        } else{
-            $gear_type = trim($_POST["gear_type"]);
-        }
-
-        if(empty(trim($_POST["gear_status"]))){
-            $gear_err = "Please provide a gear status.";     
-        } else{
-            $gear_status = trim($_POST["gear_status"]);
-        }
-
-        if(empty(trim($_POST["gear_brand"]))){
-            $gear_err = "Please provide a gear brand";     
-        } else{
-            $gear_brand = trim($_POST["gear_brand"]);
-        }
-
-        if(empty(trim($_POST["gear_condition"]))){
-            $gear_err = "Please provide a condition";     
-        } else{
-            $gear_condition = trim($_POST["gear_condition"]);
-        }  
+        } 
 
         // Check the result of the checkbox in the form to decide whether to make the group private or not
         if(isset($_POST['privateCheckbox']) && $_POST['privateCheckbox'] == 'YES'){
@@ -126,12 +96,12 @@
                     echo "Could not create group";
                 } else{
                     $group_id = mysqli_insert_id($link);
+                    $_SESSION["group_id"] = $group_id;
                     printf($stmt0->error);
                 }
                 // Close the statement made above in mysqli_prepare
                 mysqli_stmt_close($stmt0);
             }
-
 
             // Prepare an insert statement for the belongs_to table
             // This will set the group owner to the user who created the group
@@ -151,45 +121,36 @@
                 // Attempt to execute the prepared statement
                 if(mysqli_stmt_execute($stmt2)){
                     // Redirect to groups page upon success
-                    // header("location: groups.php");
-                    echo "success";
+                   //header("location: groups.php");
+                   echo("success");
                 } else{
                     echo "Something went wrong. Please try again later.";
                 }
                 // Close statement
                 mysqli_stmt_close($stmt2);
             }
-            $sql3 = "INSERT INTO Gear VALUES (?, ?, ?, ?, ?)";
-            if($stmt3 = mysqli_prepare($link, $sql3)){
-                mysqli_stmt_bind_param($stmt3, "sssss", $gear_id, $gear_type, $gear_status, $gear_brand, $gear_condition);
-                
-                if(mysqli_stmt_execute($stmt3)){
-                    // Redirect to groups page upon success
-                    //header("location: groups.php");
-                    echo "success";
-                } else{
-                    printf($stmt3->error);
-                    //echo "Something went wrong. Please try again later.";
+            $array_name = $_SESSION["array_name"];
+            if (!empty($array_name)){
+                $hasQuery = '';
+                for ($count = 0; $count < count($array_name); $count++){
+                    $hasQuery .= '
+                        INSERT INTO Has VALUES("'.$group_id.'", "'.$array_name[$count].'");  
+                    ';
                 }
-                // If the insert didn't affect any rows, the group was not successfully created.
-                mysqli_stmt_close($stmt3);
+                if ($hasQuery != ''){
+                    if (mysqli_multi_query($link, $hasQuery)){
+                        //unset($_SESSION['array_name']);
+                    }
+                    else{
+                        echo 'Error';
+                    }
+                }
+                else{
+                    echo 'All Fields are Required';
+                }
             }
 
-            $sql4 = "INSERT INTO Has VALUES (?,?)";
-            if($stmt4 = mysqli_prepare($link, $sql4)){
-                mysqli_stmt_bind_param($stmt4, "is", $group_id, $gear_id);
-                
-                if(mysqli_stmt_execute($stmt4)){
-                    // Redirect to groups page upon success
-                    header("location: groups.php");
-                } else{
-                    printf($stmt4->error);
-                    echo "Something went wrong. Please try again later.";
-                }
-                // If the insert didn't affect any rows, the group was not successfully created.
-                mysqli_stmt_close($stmt4);
-            }
-
+            
         }
 
         // Close connection
@@ -205,7 +166,7 @@
 
 		<!-- BootStrap CSS -->
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js">
 		<!-- Bootstrap JS -->
 		<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
@@ -266,46 +227,44 @@
         <span class="help-block"><?php echo $loggedin_err; ?></span>
 
         <!-- Form that will run the above PHP upon "submit" (POST) -->
-		<form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+		<form id="done" name="done" method="POST">
                 <!-- Labels and input for "Group Name" insert -->
-	            <div class="form-group <?php echo (!empty($groupname_err)) ? 'has-error' : ''; ?>">
+	            <div class="form-group">
 	                <label>Group Name</label>
-	                <input type="text" name="groupname" class="form-control" value="<?php echo $groupname; ?>">
-	                <span class="help-block"><?php echo $groupname_err; ?></span>
+	                <input type="text" name="groupname" class="form-control" required="true">
 	            </div>
 
                 <!-- Labels and input for "Description" insert -->
-	            <div class="form-group <?php echo (!empty($description_err)) ? 'has-error' : ''; ?>">
+	            <div class="form-group">
 	                <label>Description</label>
-	                <input type="text" name="description" class="form-control" value="<?php echo $description; ?>">
-	                <span class="help-block"><?php echo $description_err; ?></span>
+	                <input type="text" name="description" class="form-control" required="true">
 	            </div>
 
-                <div class="table-responsive <?php echo (!empty($gear_err)) ? 'has-error' : ''; ?>">
-                    <table class="table table-bordered" id="crud_table" name="crud_table">
+                <div id="table_ready" class="form-group table-responsive">
+                    <label>Gear</label>
+                    <table class="table table-bordered" id="crud_table">
                         <tr>
-                            <th width="18%">Gear Name</th>
-                            <th width="18%">Gear Type</th>
-                            <th width="18%">Gear Status</th>
-                            <th width="18%">Gear Brand</th>
-                            <th width="18%">Gear Condition</th>
-                            <th width="10%"></th>
+                            <th width="10%">Name</th>
+                            <th width="10%">Type</th>
+                            <th width="10%">Status</th>
+                            <th width="10%">Brand</th>
+                            <th width="10%">Condition</th>
+                            <th width="5%"></th>
                         </tr>
                         <tr>
-                            <td name="gearTable"><input type="text" name="gear_name"></td>
-                            <td name="gearTable"><input type="text" name="gear_type"></td>
-                            <td name="gearTable"><input type="text" name="gear_status"></td>
-                            <td name="gearTable"><input type="text" name="gear_brand"></td>
-                            <td name="gearTable"><input type="text" name="gear_condition"></td>
+                            <td contenteditable="true" class="name"></td>
+                            <td contenteditable="true" class="type"></td>
+                            <td contenteditable="true" class="status"></td>
+                            <td contenteditable="true" class="brand"></td>
+                            <td contenteditable="true" class="condition"></td>
                             <td></td>
                         </tr>
-                        <span class="help-block"><?php echo $gear_err; ?></span>
                     </table>
                     <div align="right">
-                        <button type="button" name="add" id="add" class="btn btn-success btn-xs">+</button>
-                    </div>
-                </div> 
-
+                        <button type="button" name="add" id="add" class="btn btn-success btn-xs">+</button> 
+                    </div> 
+                </div>
+ 
                 <!-- Checkbox for deciding if a group is public or private -->
 	            <div class="form-group form-check">
     				<input type="checkbox" class="form-check-input" name="privateCheckbox" value="YES" id="check">
@@ -314,31 +273,68 @@
 
                 <!-- Group that controls the submission of the form, triggers a POST call -->
 	            <div class="form-group">
-	                <input type="submit" class="btn btn-primary" value="Submit">
-	                <input type="reset" class="btn btn-default" value="Reset">
+	                <button type="submit" id="save" name="save" class="btn btn-primary">Submit</button>
+                    <input type="reset" class="btn btn-default" value="Reset">
 	            </div>
 	        </form>
-            <script>
-                $(document).ready(function(){
-                    var count = 1;
-                    $('#add').click(function(){
-                        count = count + 1;
-                        var html_code = "<tr id='row"+count+"'>";
-                        html_code += "<td name='gearTable'><input type='text' name='gear_name"+count+"'></td>";
-                        html_code += "<td name='gearTable'><input type='text' name='gear_type"+count+"'></td>";
-                        html_code += "<td name='gearTable'><input type='text' name='gear_status"+count+"'></td>";
-                        html_code += "<td name='gearTable'><input type='text' name='gear_brand"+count+"'></td>";
-                        html_code += "<td name='gearTable'><input type='text' name='gear_condition"+count+"'></td>";
-                        html_code += "<td><button type='button' name='remove' data-row='row"+count+"' class='btn btn-danger btn-xs remove'>-</button></td>";
-                        html_code += "</tr>";
-                        $('#crud_table').append(html_code);
-                    });
-                    $(document).on('click', '.remove', function(){
-                        var delete_row = $(this).data("row");
-                        $('#'+delete_row).remove();
-                    });
-                })
-            </script>
 	</body>
-
+    <script>
+        $('#done').ready(function(){
+            var count = 1;
+            $('#add').click(function(){
+                count = count + 1;
+                var html_code = "<tr id='row"+count+"'>";
+                html_code += "<td contenteditable='true' class='name'></td>";
+                html_code += "<td contenteditable='true' class='type'></td>";
+                html_code += "<td contenteditable='true' class='status'></td>";
+                html_code += "<td contenteditable='true' class='brand'></td>";            
+                html_code += "<td contenteditable='true' class='condition'></td>";
+                html_code += "<td><button type='button' name='remove' data-row='row"+count+"' class='btn btn-danger btn-xs remove'>-</button></td>";
+                html_code += "</tr>";
+                $('#crud_table').append(html_code);  
+            });
+            $(document).on('click', '.remove', function(){
+                var delete_row = $(this).data("row");
+                $('#'+delete_row).remove();
+            });
+                $('#save').on("click", function(){  
+                    var name = [];
+                    var type = [];
+                    var status = [];
+                    var brand = [];
+                    var condition = [];
+                    $('.name').each(function(){
+                        name.push($(this).text());
+                    });
+                    $('.type').each(function(){
+                        type.push($(this).text());
+                    });
+                    $('.status').each(function(){
+                        status.push($(this).text());
+                    });
+                    $('.brand').each(function(){
+                        brand.push($(this).text());
+                    });
+                    $('.condition').each(function(){
+                        condition.push($(this).text());
+                    });
+                    jQuery.ajax({
+                        url:"insert.php",
+                        method: "POST",
+                        data:{
+                            name:name, 
+                            type:type, 
+                            status:status, 
+                            brand:brand, 
+                            condition:condition},
+                        success:function(result){
+                            window.location.href = "groups.php";
+                        },
+                        error:function(result){
+                            alert("error");
+                        }
+                    });
+                });
+        });
+    </script>
 </html>

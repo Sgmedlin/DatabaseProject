@@ -102,7 +102,7 @@
 						echo "<td>" . $row['description'] . "</td>";
 						echo "</tr>";
 						}
-						mysqli_close($con);
+						//mysqli_close($con);
 
 				 ?>
 			</tbody>

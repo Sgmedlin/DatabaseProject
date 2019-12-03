@@ -20,7 +20,7 @@
     $rows = mysqli_num_rows($result);
 
     if ($rows > 0){
-       $profile_btn = "<input type='submit' class='btn btn-primary' value='Join this group'>";
+       $profile_btn = "<input type='submit' id ='button' name='submit-button' class='btn btn-primary' value='Join this group'>";
     }
     else{
        $profile_error = "<p> Some features will not be available until you create your user profile. To create your profile, please click <a href='profile.php'>here</a>. </p>";
@@ -57,23 +57,14 @@
 
    	mysqli_free_result($result1);
 
-	$sql2 = "SELECT `gear_id`, `type`, `status`, `brand`, `condition` FROM Gear NATURAL JOIN Has WHERE group_id = ".$_GET['id'];
+	$sql2 = "SELECT `gear_id`, `name`, `type`, `status`, `brand`, `condition` FROM Gear NATURAL JOIN Has WHERE group_id = ".$_GET['id'];
    	$gear_result = mysqli_query($link, $sql2);
-   	$gear_details = mysqli_fetch_assoc($gear_result);
-
-   	$gear_name = $gear_details["gear_id"];
-	$gear_type = $gear_details['type'];
-	$gear_status = $gear_details['status'];
-	$gear_brand = $gear_details['brand'];
-	$gear_condition = $gear_details['condition'];
-
-   	mysqli_free_result($gear_result);
 	// Query to select all of the members of a group
    	$sql3 = "SELECT user_id, name, membership_level FROM User_Profile NATURAL JOIN belongs_to NATURAL JOIN Groups WHERE group_id=".$_GET['id'];
 
    	// Store the query in the "result" variable to iteratively list the results
 	// in the HTML below
-   	$result3 = mysqli_query($link, $sql3);
+	$result3 = mysqli_query($link, $sql3);
 
 	if($_SERVER["REQUEST_METHOD"] == "POST"){
 		$sqlx = "INSERT INTO belongs_to VALUES (?, ?, ?)";
@@ -89,7 +80,48 @@
             }
                 // If the insert didn't affect any rows, the group was not successfully created.
             mysqli_stmt_close($stmtx);
-        }
+		}
+		
+		$checkQuery = '';
+		$date = date('Y-m-d H:i:s');
+		//print($date);
+		$name = array();
+		$user_id = $_SESSION['id'];
+		$sql4 = "SELECT `gear_id`, `name`, `type`, `status`, `brand`, `condition` FROM Gear NATURAL JOIN Has WHERE group_id = ".$_GET['id'];
+   		$gear_r = mysqli_query($link, $sql4);
+		while($r = mysqli_fetch_array($gear_r)) {
+			array_push($name, $r['gear_id']);
+		}
+		if (isset($_POST['submit-btn'])){
+			if (!empty($name)){
+				for($count = 0; $count < count($name); $count++){
+					//$isDefined = false;
+					if(isset($_POST["privateCheckbox$count"])){
+						//$isDefined = true;
+						$checkQuery .= '
+                        	INSERT INTO checks_out VALUES("'.$user_id.'", "'.$name[$count].'", "'.$date.'", NULL);  
+                    	';
+					};
+				}
+				//echo "checkquery: " . $checkQuery . " .";
+				if ($checkQuery != ''){
+                    if (mysqli_multi_query($link, $checkQuery)){
+						//unset($_SESSION['array_name']);
+						//print("check: " . $checkQuery);
+                    }
+                    else{
+						//echo "reporting";
+                    }
+                }
+                else{
+                    echo 'All Fields are Required';
+                }	
+			}
+		}
+		else{
+			echo "not pressed yet!";
+		}
+
 	}
 ?>
 
@@ -100,7 +132,7 @@
 
 		<!-- BootStrap CSS -->
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
+		<link rel="stylesheet" href="css/style.css">
 		<!-- Bootstrap JS -->
 		<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
@@ -153,7 +185,6 @@
                 }
                 ?>
 
-
 		  </div>
 		</nav>
 
@@ -165,27 +196,64 @@
 		<p> Gear : The available gears are: </p>
 		<div class="table-responsive">
 		<table class="table table-bordered" id="crud_table">
-			<tr>
-				<th width="20%">Gear Name</th>
-				<th width="20%">Gear Type</th>
-				<th width="20%">Gear Status</th>
-				<th width="20%">Gear Brand</th>
-				<th width="20%">Gear Condition</th>
-			</tr>
-			<tr>
-				<th><?php echo $gear_name; ?></th>
-				<th><?php echo $gear_type; ?></th>
-				<th><?php echo $gear_status; ?></th>
-				<th><?php echo $gear_brand; ?></th>
-				<th><?php echo $gear_condition; ?></th>
-			</tr>
+			<thead>
+				<th scope="col">Name</th>
+				<th scope="col">Type</th>
+				<th scope="col">Status</th>
+				<th scope="col">Brand</th>
+				<th scope="col">Condition</th>
+			</thead>
+
+			<tbody>
+				<?php
+				$name = array();
+				while($row = mysqli_fetch_array($gear_result)) {
+					array_push($name, $row['name']);
+					echo "<tr>";
+					echo "<td>" . $row['name'] . "</td>";
+					echo "<td>" . $row['type'] . "</td>";
+					echo "<td>" . $row['status'] . "</td>";
+					echo "<td>" . $row['brand'] . "</td>";
+					echo "<td>" . $row['condition'] . "</td>";
+					echo "</tr>";
+				}
+
+				?>
+			</tbody>
 		</table>
 		</div>
-			<form method="post">
-				<?php echo $profile_btn; ?>
-				<?php echo $profile_error; ?>
-			</form>
+			<!-- <form method="post"> -->
+			<?php echo $profile_btn; ?>
+			<?php echo $profile_error; ?>
+			<!-- </form> -->
 		</div>
+
+		<div class="bg-modal">
+			<div class="modal-content">
+				<div class="modal-close">+</div>	
+				<h1>Gear List</h1>
+				<form method="post">
+				<ul id="list" class="list-group overflow-auto">
+					<?php
+						for($i = 0; $i < count($name); $i++){
+							echo "<li>
+								<div class=\"form-check\">
+								<div class=\"form-group form-check\">
+									<input type=\"checkbox\" class=\"form-check-input\" name=\"privateCheckbox$i\" value=\"YES\" id=\"gear$i\">
+									<label class=\"form-check-label\" for=\"gear$i\">$name[$i]</label>
+								</div>
+								</li>";
+							}
+
+						?>
+				</ul>	
+					<div class="submit-btn">
+						<input type="submit" id="submit-btn" name="submit-btn" class="btn btn-primary" value="submit">
+					</div>
+				</form>
+			</div>
+		</div>	
+
 		<!-- Shows the members of a group -->
 		<h2>Members:</h2>
 
@@ -208,6 +276,13 @@
 					echo "<tr>";
 					echo "<td> <a class='btn btn-link' role='button' href='user_details.php?id=" . $row['user_id'] . "'>" . $row['name'] .  "</td>";
 					echo "<td>" . $row['membership_level'] . "</td>";
+					$sql4 = "SELECT `name`, `user_id` FROM checks_out NATURAL JOIN Gear WHERE user_id=".$row['user_id'];
+					$result4 = mysqli_query($link, $sql4);
+					$value = '';
+					while ($row4 = mysqli_fetch_array($result4)){
+						$value .= $row4['name'] . " , ";
+					}
+					echo "<td>" . $value . "</td>";	
 					echo "<td>" . "</td>"; 
 					echo "</tr>";
 					}
@@ -218,6 +293,14 @@
 
 		</table>
 
+	<script>
+		document.getElementById('button').addEventListener('click', function(){
+			document.querySelector('.bg-modal').style.display = 'flex';
+		});
+		document.querySelector('.modal-close').addEventListener('click', function(){
+			document.querySelector('.bg-modal').style.display = 'none';
+		})
+	</script>
 	</body>
 
 </html>
