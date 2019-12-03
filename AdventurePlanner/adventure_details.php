@@ -61,9 +61,15 @@
 		      <li class="nav-item">
 		        <a class="nav-link" href="adventures.php">Adventures <span class="sr-only">(current)</span></a>
 		      </li>
-					<li class="nav-item">
-		        <a class="nav-link" href="trips.php"> Trips </a>
-		      </li>
+				<li class="nav-item dropdown">
+      				<a class="nav-link dropdown-toggle" href="groups.php" id="navbardrop" data-toggle="dropdown">
+        				Trips
+      				</a>
+      			 	<div class="dropdown-menu">
+                		<a class="dropdown-item" href="trips.php">All Trips</a>
+        				<a class="dropdown-item" href="create_trip.php">Create a Trip</a>
+      				</div>
+   				</li>
 
 			<li class="nav-item dropdown">
       				<a class="nav-link dropdown-toggle" href="groups.php" id="navbardrop" data-toggle="dropdown">
