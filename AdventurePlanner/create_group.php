@@ -22,12 +22,12 @@
         // Make sure the group name is not empty
         if(empty(trim($_POST["groupname"]))){
             $groupname_err = "Please enter a name for your group.";
-
-        } else{
+        } 
+        else{
 
             // Prepare a SELECT statement to check that the group name
             // entered does not already exist in the database table "Groups"
-            $sql = "SELECT group_id FROM Groups WHERE group_name=?";
+            $sql = "SELECT group_id FROM Groups WHERE group_name = ?";
 
             if($stmt = mysqli_prepare($link, $sql)){
                 // Bind variables to the prepared statement as parameters
@@ -49,7 +49,7 @@
                         $groupname = trim($_POST["groupname"]);
                     }
                 } else{
-                    echo Oops! Something went wrong. Please try again later;
+                    echo "Oops! Something went wrong. Please try again later";
                 }
             }
 
@@ -135,7 +135,9 @@
 
         // Close connection
         mysqli_close($link);
+
     }
+
 
 ?>
 
