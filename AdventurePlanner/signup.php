@@ -1,4 +1,7 @@
 <?php
+
+    // Code help from
+    // https://www.tutorialrepublic.com/php-tutorial/php-mysql-login-system.php
     // Include config file
     require_once "config.php";
 

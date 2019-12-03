@@ -1,4 +1,6 @@
 <?php
+    // Code help from
+    // https://www.tutorialrepublic.com/php-tutorial/php-mysql-login-system.php
     // Initialize the session
     session_start();
 
