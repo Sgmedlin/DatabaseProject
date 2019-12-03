@@ -5,12 +5,25 @@
  	// Uses basic user access level for viewing group details
 	require_once "session_config.php";
 
-	// Query all of the adventures from the Groups database table
-	$sql="SELECT * FROM Groups WHERE status='Open'";
+	$owner_id = $_GET["user_id"];
 
-	// Store the query in the "result" variable to iteratively list the results
-	// in the HTML below
-	$result = mysqli_query($link, $sql);
+	if($owner_id != ''){
+
+		$sql="SELECT * FROM Groups WHERE group_id IN (SELECT group_id FROM belongs_to WHERE user_id=". $owner_id .")";
+
+		$result = mysqli_query($link, $sql);
+	}
+	else{
+			// Query all of the adventures from the Groups database table
+		$sql="SELECT * FROM Groups WHERE status='Open'";
+
+		// Store the query in the "result" variable to iteratively list the results
+		// in the HTML below
+		$result = mysqli_query($link, $sql);
+
+	}
+
+
 
 ?>
 
@@ -63,8 +76,14 @@
         				Groups
       				</a>
       			 	<div class="dropdown-menu">
+      			 		<?php
+			                if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
+			                	echo "<a class='dropdown-item' href='groups.php?user_id=" . $_SESSION["id"] . "'> My Groups </a>";
+			                }
+                		?>
+                		<a class="dropdown-item" href="groups.php">All Groups</a>
         				<a class="dropdown-item" href="create_group.php">Create a Group</a>
-        				<a class="dropdown-item" href="groups.php">List of Groups</a>
+        				
       				</div>
    			</li>
 		    </ul>

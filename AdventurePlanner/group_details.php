@@ -3,14 +3,19 @@
 	// Start session, checks variables to see if
 	session_start();
 
+	// $delete_group_button = ""
+
 	// Uses basic user access level for viewing adventure details
 	require_once "session_config.php";
 
+	$group_id = $_GET['id'];
+
 	// Retrieves the group ID from the GET information in groups.php page
 	// Uses result of query to show information about the group in question
-   	$sql = "SELECT * FROM Groups WHERE group_id = '".$_GET['id']."'";
+   	$sql = "SELECT * FROM Groups WHERE group_id = '".$group_id."'";
    	$result = mysqli_query($link, $sql);
 
+   	
    	// Gets the result of the above query and stores them in the group_details variable
    	$group_details = mysqli_fetch_assoc($result);
 
@@ -21,6 +26,12 @@
 
    	mysqli_free_result($result);
 
+   	if(isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] == true){
+   		$current_user_id = $_SESSION["id"];
+    }
+    else{
+    	$current_user_id = 123456;
+    }
 
    	// Query to select the owner of the group
    	$sql1 = "SELECT user_id, name FROM User_Profile NATURAL JOIN belongs_to NATURAL JOIN Groups WHERE membership_level='Owner' AND group_id=".$_GET['id'];
@@ -31,6 +42,10 @@
 
    	$owner = $group_owner_details['name'];
    	$owner_id = $group_owner_details['user_id'];
+
+   	// if ($owner_id == $current_user_id){
+   	// 	echo "You are the owner";
+   	// }
 
    	mysqli_free_result($result1);
 
@@ -93,8 +108,13 @@
         				Groups
       				</a>
       			 	<div class="dropdown-menu">
+      			 		<?php
+			                if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
+			                	echo "<a class='dropdown-item' href='groups.php?user_id=" . $_SESSION["id"] . "'> My Groups </a>";
+			                }
+                		?>
+                		<a class="dropdown-item" href="groups.php">All Groups</a>
         				<a class="dropdown-item" href="create_group.php">Create a Group</a>
-        				<a class="dropdown-item" href="groups.php">List of Groups</a>
       				</div>
    			</li>
 		    </ul>
@@ -114,7 +134,14 @@
 		</nav>
 
 		<!-- Shows the main details of a group -->
-		<h1> <?php echo $group_name; ?> </h1>
+		<?php
+	        if($owner_id == $current_user_id){
+	            echo "<h1>" . $group_name . " (Your Group)" . "</h1> <a href='delete_group.php?id=" . $group_id . " class='nav-link'> Delete Group </a>";
+	        } else {
+	            echo "<h1>" . $group_name . "</h1>";
+	        }
+	    ?>
+		
 		<p> Owner:<?php echo "<a class='btn btn-link' role='button' href='user_details.php?id=" . $owner_id . "'>" . $owner .  "</a>"; ?> </p>
 		<p> Status: <?php echo $group_status; ?>  </p>
 		<p> Description: <?php echo $group_description; ?> </p>
