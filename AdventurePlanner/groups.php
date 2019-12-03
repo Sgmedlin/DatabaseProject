@@ -4,8 +4,10 @@
 
  	// Uses basic user access level for viewing group details
 	require_once "session_config.php";
-
-	$owner_id = $_GET["user_id"];
+	$owner_id = '';
+	if(isset($_GET["user_id"])){
+		$owner_id = $_GET["user_id"];
+	}
 
 	if($owner_id != ''){
 
@@ -131,7 +133,7 @@
 						echo "<td>" . $row['description'] . "</td>";
 						echo "</tr>";
 						}
-						mysqli_close($con);
+					//	mysqli_close($con);
 
 				 ?>
 			</tbody>

@@ -13,7 +13,7 @@
 
     // Define variables and initialize with empty values
     $name = $email = $bio = "";
-    $name_err = $email_err = "";
+    $name_err = $email_err = $bio_err= "";
     $welcome_message = "";
     $update_information_text = "";
 
