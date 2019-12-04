@@ -12,8 +12,8 @@
     require_once "session_config.php";
 
     // Define variables and initialize with empty values
-    $name = $email = $bio = "";
-    $name_err = $email_err = $bio_err= "";
+    $name = $email = $bio = $drives = $seats = "";
+    $name_err = $email_err = $bio_err = $drives_err = $seats_err = "";
     $welcome_message = "";
     $update_information_text = "";
 
@@ -26,6 +26,25 @@
      $name = $row['name'];
      $email = $row['email'];
      $bio = $row['bio'];
+    //  $queryx = "SELECT * FROM drives WHERE user_id=$param_id LIMIT 1";
+    //  $resultx = mysqli_query($link, $queryx);
+    //  if (mysqli_num_rows($resultx) > 0){
+    //      $drives = "yes";
+    //  }
+    //  else{
+    //      $drives = "no";
+    //  }
+    //  mysqli_free_result($resultx);
+    //  $queryy = "SELECT * FROM Car NATURAL JOIN WHERE user_id=$param_id LIMIT 1";
+    //  $resulty = mysqli_query($link, $queryy);
+    //  if (mysqli_num_rows($resulty) > 0){
+    //     $rowy = mysqli_fetch_array($resulty, MYSQLI_ASSOC);
+    //      $seats = $rowy['num_seats'];
+    //  }
+    //  else{
+    //      $seats = 0;
+    //  }
+    //  mysqli_free_result($resulty);
 
      $rows = mysqli_num_rows($result);
 
@@ -65,6 +84,16 @@
             $bio = trim($_POST["bio"]);
         }
 
+        // if(empty(trim($_POST["drives"]))){
+        //     $drives = " ";
+        // } else{
+        //     $drives = trim($_POST["drives"]);
+        //     if(empty(trim($_POST["seats"]))){
+        //         $seats = " ";
+        //     } else{
+        //         $seats = trim($_POST["seats"]);
+        //     }
+        // }
 
         if ($param_result == true){
 
@@ -84,6 +113,28 @@
                         $update_information_text = "Something went wrong... Please try again later.";
                     }
                 }
+
+                // Close statement
+                mysqli_stmt_close($stmt);
+
+                // Prepare an insert statement
+                // $sql_Car = "INSERT INTO Car VALUES (?, ?, ?, ?, ?)";
+
+                // if($stmt_Car = mysqli_prepare($link, $sql_Car)){
+                //     mysqli_stmt_bind_param($stmt_Car, "issss", $param_car_id, $param_nums_seats, $param_make, $param_model, $param_year);
+                //     // Attempt to execute the prepared statement
+                //     $param_car_id = $param_id;
+                //     $param_num_seats = $seats;
+                //     $param_make = "none";
+                //     $param_model = "none";
+                //     $param_year = "2019";
+                //     if(mysqli_stmt_execute($stmt_Car)){
+                //         // Redirect to welcome page
+                //         echo "success";    
+                //     } else{
+                //         $update_information_text = "Something went wrong... Please try again later.";
+                //     }
+                // }
 
                 // Close statement
                 mysqli_stmt_close($stmt);
@@ -226,6 +277,17 @@
                     <label>Bio</label>
                     <input type="text" name="bio" class="form-control" value="<?php echo $bio; ?>">
                     <span class="help-block"><?php echo $bio_err; ?></span>
+                </div>
+                
+                <div class="form-group <?php echo (!empty($drives_err)) ? 'has-error' : ''; ?>">
+                    <label>Drives</label>
+                    <input type="text" name="bio" class="form-control" value="<?php echo $drives; ?>">
+                    <span class="help-block"><?php echo $drives_err; ?></span>
+                </div>
+                <div class="form-group <?php echo (!empty($seats_err)) ? 'has-error' : ''; ?>">
+                    <label>Seats</label>
+                    <input type="text" name="bio" class="form-control" value="<?php echo $seats; ?>">
+                    <span class="help-block"><?php echo $seats_err; ?></span>
                 </div>
                 <div class="form-group">
                     <input type="submit" class="btn btn-primary" value="Submit">
