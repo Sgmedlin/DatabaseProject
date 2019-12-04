@@ -24,7 +24,7 @@
 	mysqli_free_result($result);
 	
 	$group_id = $_GET['id'];
-
+	$_SESSION['group_id'] = $_GET['id'];
 
 	// Retrieves the group ID from the GET information in groups.php page
 	// Uses result of query to show information about the group in question
@@ -69,7 +69,6 @@
    	$gear_result = mysqli_query($link, $sql2);
 	// Query to select all of the members of a group
    	$sql3 = "SELECT user_id, name, membership_level FROM User_Profile NATURAL JOIN belongs_to NATURAL JOIN Groups WHERE group_id=".$_GET['id'];
-
    	// Store the query in the "result" variable to iteratively list the results
 	// in the HTML below
    	$result3 = mysqli_query($link, $sql3);
@@ -280,12 +279,21 @@
 							}
 						?>
 				</ul>	
-					<div class="submit-btn">
+					<div class="submit">
 						<input type="submit" id="submit-btn" name="submit-btn" class="btn btn-primary" value="submit">
 					</div>
 				</form>
 			</div>
 		</div>	
+
+		<!-- export data -->
+		<form action="data.php" method="post">
+			<button type="submit" id="export-btn" name="export-btn" class="btn btn-success">export Gear data</button>
+		</form>
+		<!-- <form action="members.php" method="post">
+			<button type="submit" id="member-list-btn" name="member-list-btn" class="btn btn-success">export Members data</button>
+		</form> -->
+
 		<!-- Shows the members of a group -->
 		<h2>Members:</h2>
 
