@@ -251,7 +251,7 @@ select.form-control:focus {
                         <span class="help-block"><?php echo $bio_err; ?></span>
                     </div>
                     <div class="form-group">
-                        <input type="submit" class="btn btn-primary" value="Submit">
+                        <input type="submit" class="btn btn-primary" style="background-color:#aed581; border:none; color:black;" value="Submit">
                         <input type="reset" class="btn btn-default" value="Reset">
                     </div>
                     <?php echo $update_information_text ?>
