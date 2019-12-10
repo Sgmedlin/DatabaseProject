@@ -63,7 +63,7 @@
                     // set the group name error variable
                     if(mysqli_stmt_num_rows($stmt) == 1){
                         $tripname_err = "This trip name is already taken.";
-                    } else{     
+                    } else{
                         $trip_name = $param_tripname;
                     }
                 } else{
@@ -133,7 +133,7 @@
         }
 
         // If any of the errors checked have been set (i.e. the user is either not logged in, the group name is empty, or the description is empty) then don't let the user create a group.
-        if(empty($tripnameerr) && empty($description_err) && empty($groupname_err) && empty($adventurename_err) && empty($pickup_err) && empty($dropoff_err) 
+        if(empty($tripnameerr) && empty($description_err) && empty($groupname_err) && empty($adventurename_err) && empty($pickup_err) && empty($dropoff_err)
             && empty($start_err) && empty($end_err) && empty($size_err)){
 
             // Prepare the SQL statement to INSERT the new group into the table
@@ -246,11 +246,11 @@
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
-<html>
-	<head>
 
-		<!-- BootStrap CSS -->
+
+
+
+<html lang="en" style="min-height:100%; position:relative;"><head><!-- BootStrap CSS -->
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
@@ -264,184 +264,223 @@
         <!-- <script src="/js/jquery-3.4.1.min.js"></script> -->
         <script src="js/moment.js"></script>
 
-        
+
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" /><style>
 
-		<title>Create Trip</title>
+input[type="text"],
+select.form-control {
+  background: transparent;
+	border: 1px solid #BEBEBEBE;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  border-radius: 50px;
+}
 
-	</head>
+input[type="text"]:focus,
+select.form-control:focus {
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+    </style>
+        <title>Create Trip</title>
+    </head>
 
-	<body>
-        <!-- NavBar must be changed in individual files -->
-		<nav class="navbar navbar-expand-lg navbar-light bg-light">
-		  <a class="navbar-brand" href="#">Adventure Planner</a>
-		  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-		    <span class="navbar-toggler-icon"></span>
+    <body style="background-color:#e1e2e1;">
+
+       <!-- NavBar must be changed in individual files -->
+		<nav style="background-color:#7da453" class="navbar navbar-expand-lg navbar-dark ">
+		  <a style="" href="#" class="navbar-brand">Hiking Buddies</a>
+		  <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" style="opacity:1;">
+		    <span class="navbar-toggler-icon" style="opacity:1;"></span>
 		  </button>
 
-		  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-		    <ul class="navbar-nav mr-auto">
-		      <li class="nav-item">
-		        <a class="nav-link" href="index.php">Home</a>
-		      </li>
-		      <?php
-                if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
-                	echo "<li class='nav-item'>
-                	<a class='nav-link' href='profile.php'>Profile <span class='sr-only'>(current)</span></a>
-                	</li>";
-                }
-                ?>
-		      <li class="nav-item">
-		        <a class="nav-link" href="adventures.php">Adventures </a>
-		      </li>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
           <li class="nav-item">
-		        <a class="nav-link" href="trips.php"> Trips </a>
-		      </li>
-		      <li class="nav-item active">
-		        <a class="nav-link" href="groups.php"> Groups <span class="sr-only">(current)</span> </a>
-		      </li>
-		    </ul>
-    		<?php
+            <a class="nav-link" href="index.php">Home</a>
+          </li>
+          <?php
                 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
-                	echo "<span class='navbar-nav'>
-                			<a href='logout.php' class='nav-link'> Log Out </a>
-            			</span>";
+                  echo "<li class='nav-item'>
+                  <a class='nav-link' href='profile.php'>Profile <span class='sr-only'>(current)</span></a>
+                  </li>";
+                }
+                ?>
+          <li class="nav-item">
+            <a class="nav-link" href="adventures.php">Adventures </a>
+          </li>
+          <li class="nav-item dropdown active">
+                    <a class="nav-link dropdown-toggle" href="groups.php" id="navbardrop" data-toggle="dropdown">
+                        Trips
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="trips.php">All Trips</a>
+                        <a class="dropdown-item" href="create_trip.php">Create a Trip</a>
+                    </div>
+                </li>
+
+      <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="groups.php" id="navbardrop" data-toggle="dropdown">
+                Groups
+              </a>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" href="create_group.php">Create a Group</a>
+                <a class="dropdown-item" href="groups.php">List of Groups</a>
+              </div>
+        </li>
+        </ul>
+        <?php
+                if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
+                  echo "<span class='navbar-nav'>
+                      <a href='logout.php' class='nav-link'> Log Out </a>
+                  </span>";
                 } else {
-                	echo "<span class='navbar-nav'>
-		    				<a href='login.php' class='nav-link'> Login </a>
-		    			</span>";
+                  echo "<span class='navbar-nav'>
+                <a href='login.php' class='nav-link'> Login </a>
+              </span>";
                 }
                 ?>
 
-		  </div>
+      </div>
+
 		</nav>
-
-		<h1> Create Trip </h1>
-
-
-        <span class="help-block"><?php echo $loggedin_err; ?></span>
+    <div class="container" style="padding:25px 25px 145px 25px;">
+<div class="card" style="padding: 25px; width: 90%; margin:auto; border-radius:25px; background-color:#f5f5f6;">
+  <h1> Create Trip </h1>
 
 
-        <!-- Form that will run the above PHP upon "submit" (POST) -->
+          <span class="help-block"><?php echo $loggedin_err; ?></span>
 
 
-        
-        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post" style="width: 500px;">
-
-                    <div class="form-group <?php echo (!empty($tripname_err)) ? 'has-error' : ''; ?>">
-                        <label>Trip Name</label>
-                        <input type="text" name="tripName" class="form-control" value="<?php echo $trip_name; ?>">
-                        <span class="help-block" style="color:red;text-align:center;"><?php echo $tripname_err; ?></span>
-                    </div>
-
-                    <div class="form-group <?php echo (!empty($description_err)) ? 'has-error' : ''; ?>">
-                        <label>Description</label>
-                        <input type="text" name="description" class="form-control" value="<?php echo $description; ?>">
-                        <span class="help-block" style="color:red;text-align:center;"><?php echo $description_err; ?></span>
-                    </div>
-
-                    <div class="form-group col-md-8 <?php echo (!empty($groupname_err)) ? 'has-error' : ''; ?>">
-                      <label for="adventureName">Group</label>
-                      <select name="groupID" id="groupName" class="form-control">
-                        <option selected>Choose...</option>
-                        <?php
-
-                            while($row = mysqli_fetch_array($result)) {
-                                echo "<option value='" . $row['group_id']  . "'>" . $row['group_name'] . "</option>";
-                                }
-                                mysqli_close($con);
-
-                         ?>
-                      </select>
-                      <span class="help-block" style="color:red;text-align:center;"><?php echo $groupname_err; ?></span>
-                    </div>
-
-                    <div class="form-group col-md-8 <?php echo (!empty($adventurename_err)) ? 'has-error' : ''; ?>">
-                      <label for="adventureName">Adventure</label>
-                      <select name="adventureID" id="adventureName" class="form-control">
-                        <option selected>Choose...</option>
-                        <?php
-
-                            while($row = mysqli_fetch_array($result2)) {
-                                echo "<option value='" . $row['adventure_id']  . "'>" . $row['name'] . "</option>";
-                                }
-                                mysqli_close($con);
-
-                         ?>
-                      </select>
-                      <span class="help-block" style="color:red;text-align:center;"><?php echo $adventurename_err; ?></span>
-                    </div>
-
-                    <div class="form-group <?php echo (!empty($pickup_err)) ? 'has-error' : ''; ?>">
-                        <label>Pick-Up Location</label>
-                        <input type="text" name="pickuplocation" class="form-control" value="<?php echo $pickup_location; ?>">
-                        <span class="help-block" style="color:red;text-align:center;"><?php echo $pickup_err; ?></span>
-                    </div>
-
-                    <div class="form-group <?php echo (!empty($dropoff_err)) ? 'has-error' : ''; ?>">
-                        <label>Drop-Off Location</label>
-                        <input type="text" name="dropofflocation" class="form-control" value="<?php echo $dropoff_location; ?>">
-                        <span class="help-block" style="color:red;text-align:center;"><?php echo $dropoff_err; ?></span>
-                    </div>
-                
-                    <div class="form-group <?php echo (!empty($start_err)) ? 'has-error' : ''; ?>">
-                        <label>Pick-Up Time</label>
-                       <div class="input-group date" id="datetimepicker7" data-target-input="nearest">
-                            <input type="text" name="start_datetime" class="form-control datetimepicker-input" data-target="#datetimepicker7"/>
-                            <div class="input-group-append" data-target="#datetimepicker7" data-toggle="datetimepicker">
-                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                            </div>
-                        </div>
-                        <span class="help-block" style="color:red;text-align:center;"><?php echo $start_err; ?></span>
-                    </div>
-
-                    <div class="form-group <?php echo (!empty($end_err)) ? 'has-error' : ''; ?>">
-                        <label>Drop-Off Time</label>
-                       <div class="input-group date" id="datetimepicker8" data-target-input="nearest">
-                            <input type="text" name="end_datetime" class="form-control datetimepicker-input" data-target="#datetimepicker8"/>
-                            <div class="input-group-append" data-target="#datetimepicker8" data-toggle="datetimepicker">
-                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                            </div>
-                        </div>
-                        <span class="help-block" style="color:red;text-align:center;"><?php echo $end_err; ?></span>
-                    </div>
+          <!-- Form that will run the above PHP upon "submit" (POST) -->
 
 
-                    <div class="form-group col-md-4 <?php echo (!empty($size_err)) ? 'has-error' : ''; ?>">
-                        <label>Max Number of Attendees</label>
-                        <input type="text" name="tripSize" class="form-control" value="<?php echo $size; ?>">
-                        <span class="help-block" style="color:red;text-align:center;"><?php echo $size_err; ?></span>
-                    </div>
-                    
-                    <div class="form-group form-check">
-                        <input type="checkbox" class="form-check-input" name="privateCheckbox" value="YES" id="check">
-                        <label class="form-check-label" for="check">Make Trip Private (invite only)</label>
-                    </div>
-            
-            <script type="text/javascript">
-                $(function () {
-                    $('#datetimepicker7').datetimepicker();
-                    $('#datetimepicker8').datetimepicker({
-                        useCurrent: false
-                    });
-                    $("#datetimepicker7").on("change.datetimepicker", function (e) {
-                        $('#datetimepicker8').datetimepicker('minDate', e.date);
-                    });
-                    $("#datetimepicker8").on("change.datetimepicker", function (e) {
-                        $('#datetimepicker7').datetimepicker('maxDate', e.date);
-                    });
-                });
-            </script>
 
-                <div class="form-group">
-                    <input type="submit" class="btn btn-primary" value="Submit">
-                    <input type="reset" class="btn btn-default" value="Reset">
-                </div>
-        </form>
-        
+          <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post" style="width: 100%;">
+
+                      <div class="form-group <?php echo (!empty($tripname_err)) ? 'has-error' : ''; ?>">
+                          <label>Trip Name</label>
+                          <input type="text" name="tripName" class="form-control" value="<?php echo $trip_name; ?>">
+                          <span class="help-block" style="color:red;text-align:center;"><?php echo $tripname_err; ?></span>
+                      </div>
+
+                      <div class="form-group <?php echo (!empty($description_err)) ? 'has-error' : ''; ?>">
+                          <label>Description</label>
+                          <input type="text" name="description" class="form-control" value="<?php echo $description; ?>">
+                          <span class="help-block" style="color:red;text-align:center;"><?php echo $description_err; ?></span>
+                      </div>
+
+                      <div class="form-group col-md-8 <?php echo (!empty($groupname_err)) ? 'has-error' : ''; ?>">
+                        <label for="adventureName">Group</label>
+                        <select name="groupID" id="groupName" class="form-control">
+                          <option selected>Choose...</option>
+                          <?php
+                              while($row = mysqli_fetch_array($result)) {
+                                  echo "<option value='" . $row['group_id']  . "'>" . $row['group_name'] . "</option>";
+                                  }
+                                  mysqli_close($con);
+                           ?>
+                        </select>
+                        <span class="help-block" style="color:red;text-align:center;"><?php echo $groupname_err; ?></span>
+                      </div>
+
+                      <div class="form-group col-md-8 <?php echo (!empty($adventurename_err)) ? 'has-error' : ''; ?>">
+                        <label for="adventureName">Adventure</label>
+                        <select name="adventureID" id="adventureName" class="form-control">
+                          <option selected>Choose...</option>
+                          <?php
+                              while($row = mysqli_fetch_array($result2)) {
+                                  echo "<option value='" . $row['adventure_id']  . "'>" . $row['name'] . "</option>";
+                                  }
+                                  mysqli_close($con);
+                           ?>
+                        </select>
+                        <span class="help-block" style="color:red;text-align:center;"><?php echo $adventurename_err; ?></span>
+                      </div>
+
+                      <div class="form-group <?php echo (!empty($pickup_err)) ? 'has-error' : ''; ?>">
+                          <label>Pick-Up Location</label>
+                          <input type="text" name="pickuplocation" class="form-control" value="<?php echo $pickup_location; ?>">
+                          <span class="help-block" style="color:red;text-align:center;"><?php echo $pickup_err; ?></span>
+                      </div>
+
+                      <div class="form-group <?php echo (!empty($dropoff_err)) ? 'has-error' : ''; ?>">
+                          <label>Drop-Off Location</label>
+                          <input type="text" name="dropofflocation" class="form-control" value="<?php echo $dropoff_location; ?>">
+                          <span class="help-block" style="color:red;text-align:center;"><?php echo $dropoff_err; ?></span>
+                      </div>
+
+                      <div class="form-group <?php echo (!empty($start_err)) ? 'has-error' : ''; ?>">
+                          <label>Pick-Up Time</label>
+                         <div class="input-group date" id="datetimepicker7" data-target-input="nearest">
+                              <input type="text" name="start_datetime" class="form-control datetimepicker-input" data-target="#datetimepicker7"/>
+                              <div class="input-group-append" data-target="#datetimepicker7" data-toggle="datetimepicker">
+                                  <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                              </div>
+                          </div>
+                          <span class="help-block" style="color:red;text-align:center;"><?php echo $start_err; ?></span>
+                      </div>
+
+                      <div class="form-group <?php echo (!empty($end_err)) ? 'has-error' : ''; ?>">
+                          <label>Drop-Off Time</label>
+                         <div class="input-group date" id="datetimepicker8" data-target-input="nearest">
+                              <input type="text" name="end_datetime" class="form-control datetimepicker-input" data-target="#datetimepicker8"/>
+                              <div class="input-group-append" data-target="#datetimepicker8" data-toggle="datetimepicker">
+                                  <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                              </div>
+                          </div>
+                          <span class="help-block" style="color:red;text-align:center;"><?php echo $end_err; ?></span>
+                      </div>
 
 
-	</body>
+                      <div class="form-group col-md-4 <?php echo (!empty($size_err)) ? 'has-error' : ''; ?>">
+                          <label>Max Number of Attendees</label>
+                          <input type="text" name="tripSize" class="form-control" value="<?php echo $size; ?>">
+                          <span class="help-block" style="color:red;text-align:center;"><?php echo $size_err; ?></span>
+                      </div>
 
+                      <div class="form-group form-check">
+                          <input type="checkbox" class="form-check-input" name="privateCheckbox" value="YES" id="check">
+                          <label class="form-check-label" for="check">Make Trip Private (invite only)</label>
+                      </div>
+
+              <script type="text/javascript">
+                  $(function () {
+                      $('#datetimepicker7').datetimepicker();
+                      $('#datetimepicker8').datetimepicker({
+                          useCurrent: false
+                      });
+                      $("#datetimepicker7").on("change.datetimepicker", function (e) {
+                          $('#datetimepicker8').datetimepicker('minDate', e.date);
+                      });
+                      $("#datetimepicker8").on("change.datetimepicker", function (e) {
+                          $('#datetimepicker7').datetimepicker('maxDate', e.date);
+                      });
+                  });
+              </script>
+
+                  <div class="form-group">
+                      <input type="submit" class="btn btn-primary" value="Submit">
+                      <input type="reset" class="btn btn-default" value="Reset">
+                  </div>
+          </form>
+
+    </div>
+</div>
+
+
+<footer class="footer navbar-static-bottom font-small blue pt-4" style="position:absolute; bottom: 0; width: 100%;">
+		<nav class="navbar navbar-light" style="background-color: #f5f5f6;">
+			<div class="container">
+				<div class="row w-100 pagination-centered" style="padding-top:15px">
+					<a href="https://forms.gle/wBXK6W9BE3W1y4ro6" target="_blank" class="btn btn-secondary">Contact us!</a>
+				</div>
+				<div class="row w-100 pagination-centered" style="padding-top:5px">
+					<p class="text">© 2019 Copyright: CS 4750</p>
+				</div>
+			</div>
+		</nav>
+		</footer>
+</body>
 </html>
