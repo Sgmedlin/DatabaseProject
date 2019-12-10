@@ -99,6 +99,11 @@ select.form-control:focus {
 								Groups
 							</a>
 							<div class="dropdown-menu">
+								<?php
+			                if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
+			                	echo "<a class='dropdown-item' href='groups.php?user_id=" . $_SESSION["id"] . "'> My Groups </a>";
+			                }
+                		?>
 								<a class="dropdown-item" href="create_group.php">Create a Group</a>
 								<a class="dropdown-item" href="groups.php">List of Groups</a>
 							</div>
